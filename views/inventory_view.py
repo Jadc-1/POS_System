@@ -2,6 +2,7 @@ import __init__
 from models.database import engine ## Importando o engine que a gente criou no database.py
 from models.model import Products, Categorys ## Importando as tabelas
 from sqlmodel import Session, select
+from datetime import date
 
 class InventoryManagement():
     def __init__(self, engine):
@@ -22,5 +23,9 @@ class InventoryManagement():
             statement = select(Products) ## statement é geralmente usado para consulta, ele vai selecionar todos os produtos da tabela Products
             results = session.exec(statement).all() ## Depois de selecionar, o result vai retornar para a gente a tabela, agora precisamos dizer que queremos todos os valores da tabela, com o all
             return results ##Aqui não quero adicionar nada na tabela, apenas retornar a tabela por completo ao usuário
-    
         
+
+im = InventoryManagement(engine)  
+#trident = Products(name = 'Trident', kg_price = 1.50, quantity = 1, enter_date = date.today(), category_id= 1)
+#doce = Categorys(name= "Doce")
+#im.create_product(trident)

@@ -13,8 +13,10 @@ class Products(SQLModel, table= True):
     name: str
     kg_price: Decimal
     quantity: int ## Por KG ou Unidade
-    expiration_date: date = Field(default = None)
+    expiration_date: date = Field(default = None, nullable=True)
     enter_date: date
     active: str = Field(default = 'Active') ##Active or Inactive
-    category_id: int = Field(foreign_key='categorys.id')
+    category_id: int = Field(foreign_key='categorys.id', nullable= True)
     categorys: Categorys = Relationship(back_populates='products') ##fiz a relação com a tabela categorys, o back populates, permite que a gente consiga chamar algo como print(products.categorys.name) e consiga chamar o nome da categoria do produto especifico
+    
+
