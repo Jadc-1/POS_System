@@ -2,8 +2,8 @@ import __init__
 #código da biblioteca os para corrigir erro de importação do customtkinter
 import os
 
-os.environ['TCL_LIBRARY'] = r"C:\Users\Família\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
-os.environ['TK_LIBRARY'] = r"C:\Users\Família\AppData\Local\Programs\Python\Python313\tcl\tk8.6"
+os.environ['TCL_LIBRARY'] = r"C:\Users\lucas\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
+os.environ['TK_LIBRARY'] = r"C:\Users\lucas\AppData\Local\Programs\Python\Python313\tcl\tk8.6"
 
 from customtkinter import *
 from PIL import Image
@@ -26,7 +26,11 @@ logo_img = CTkImage(dark_image=logo_img_data, light_image=logo_img_data, size=(1
 CTkLabel(master=sidebar_frame, text="", image=logo_img).pack(pady=(38, 0), anchor="center")
 
 def button_onclick(button):
+    for i in (sidebar_inventory, sidebar_sales_report, sidebar_employees, sidebar_cash_closing, sidebar_pos):
+        i.configure(fg_color="#4CAF50")
+        
     button.configure(fg_color="#007900")
+        
 
 sidebar_inventory = CTkButton(master= sidebar_frame, text="Inventory", text_color="#FFFFFF", fg_color="#4CAF50", corner_radius=15, height=40, width=400, font =("Roboto", 15, "bold"), hover_color="#007900", command=lambda: button_onclick(sidebar_inventory)) ##O lambda permite que só execute essa função caso eu aperte esse botão
 sidebar_inventory.pack(pady=(150,10), padx=30, anchor="center")
