@@ -18,7 +18,7 @@ app.iconbitmap(r"images\logo_2.ico")
 set_appearance_mode("light")
 
 text_font = CTkFont(family="Arial Black", size = 15, weight="bold")
-    
+
 
 sidebar_frame = CTkFrame(master=app, fg_color=("#69F0AE"),  width=250, height=650, corner_radius=0) # Criei a sidebar, que tem como pai o app
 sidebar_frame.pack_propagate(0) ## Não deixa o conteúdo da sidebar aumentar o tamanho dela
@@ -26,6 +26,7 @@ sidebar_frame.pack(fill="y", anchor="w", side="left")
 logo_img_data = Image.open(r"images\logo_2.png")
 logo_img = CTkImage(dark_image=logo_img_data, light_image=logo_img_data, size=(120, 120))
 logo_img_label = CTkLabel(master=sidebar_frame, text="", image=logo_img).pack(pady=(38, 0), anchor="center")
+
 
 #Criei uma frame para colocar o conteúdo dos botões
 content = CTkFrame(app, height= 70, width= 70, corner_radius=0, fg_color="#F7EBE7")

@@ -26,6 +26,11 @@ class InventoryManagement():
         
 
 im = InventoryManagement(engine)  
-#trident = Products(name = 'Trident', kg_price = 1.50, quantity = 1, enter_date = date.today(), category_id= 1)
-#doce = Categorys(name= "Doce")
-#im.create_product(trident)
+#coca_cola = Products(name = 'Coca Cola', kg_price = 6.50, quantity = 5, enter_date = date.today(), category_id= 2)
+#refrigerante = Categorys(name= "refrigerante")
+#im.create_product(coca_cola)
+
+#for i in im.list_products():
+    #print(f"{i.id}, {i.name}, {i.kg_price}, {i.quantity}, {i.enter_date}, {i.category_id}")
+
+
