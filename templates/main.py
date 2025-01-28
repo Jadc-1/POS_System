@@ -18,7 +18,7 @@ app.iconbitmap(r"images\logo_2.ico")
 
 set_appearance_mode("light")
 
-text_font = CTkFont(family="Arial Black", size = 15, weight="bold")
+text_font = CTkFont(family="Verdana", size = 15, weight="bold")
 
 
 sidebar_frame = CTkFrame(master=app, fg_color="#69F0AE", width=250, height=650, corner_radius=0) # Criei a sidebar, que tem como pai o app
@@ -47,7 +47,7 @@ def button_onclick(button, parent):
     elif button == sidebar_sales_report:
         sales_report_app(parent)
 
-
+button_frame_bg = "#4CAF50"
 
 inventory_image_data = Image.open(r"images\inventory_button.png")
 inventory_image = CTkImage(dark_image=inventory_image_data, light_image= inventory_image_data, size=(25,25))
