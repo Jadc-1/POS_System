@@ -23,9 +23,37 @@ class InventoryManagement():
             statement = select(Products) ## statement é geralmente usado para consulta, ele vai selecionar todos os produtos da tabela Products
             results = session.exec(statement).all() ## Depois de selecionar, o result vai retornar para a gente a tabela, agora precisamos dizer que queremos todos os valores da tabela, com o all
             return results ##Aqui não quero adicionar nada na tabela, apenas retornar a tabela por completo ao usuário
+    
+    def list_products_treeview(self):
+        self.table_content = []
+        self.column_content = []
         
 
+        ##Separei os dois laços de repetições pois a coluna repetia por conta dos produtos
+        for produto in self.list_products():
+            self.column_content.append(
+                    list(produto.model_dump().keys()) ##aqui estou usando model_dump que retorna todos os valores como dicionarios, porém utilizando keys para pegar apenas as chaves, para as colunas. Como eu quero que o resultado seja tipo [['id']], com duas listas, pois vou utilizar o TreeView, fiz dessa forma utilizando append e list
+                )
+            break
+        
+        for produto in self.list_products():
+            self.table_content.append([ ##Estou utilizando 2 listas por conta do TreeView(precisa ser dessa forma)
+            produto.id,
+            produto.name,
+            produto.kg_price,
+            produto.quantity,
+            produto.expiration_date,
+            produto.enter_date,
+            produto.active,
+            produto.category_id,
+        ])
+
+        return self.table_content, self.column_content
+    
+
+
 im = InventoryManagement(engine)  
+print(im.list_products_treeview())
 #coca_cola = Products(name = 'Coca Cola', kg_price = 6.50, quantity = 5, enter_date = date.today(), category_id= 2)
 #refrigerante = Categorys(name= "refrigerante")
 #im.create_product(coca_cola)
