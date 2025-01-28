@@ -33,7 +33,7 @@ def inventory_app(parent):
     total_text_label = CTkLabel(master = total_value_frame, text = "Products Available", font = infos_frame_font, text_color= "#FFFFFF")
     total_text_label.place(relx = 0.5, rely = 0.5, anchor = "center")
     total_text_label.pack(pady = 3)
-    total_products = CTkLabel(master = total_value_frame, text = "123", font =("Arial Black", 25, "bold"), text_color= "#FFFFFF")
+    total_products = CTkLabel(master = total_value_frame, text = f"{products_management.count_products()}", font =("Arial Black", 25, "bold"), text_color= "#FFFFFF")
     total_products.pack(padx = 5, pady = (5, 15), anchor = "s", side = "bottom")
     
 
@@ -50,21 +50,21 @@ def inventory_app(parent):
     
     def create_table():
         row = products_management.list_rows_table()
-        columns = products_management.list_columns_table()
 
-
-
-        table_data = []
+        table_data = [
+            ['ID', 'Name', 'Unit Price', 'Quantity', 'Expiration Date', 'Enter Date', 'Active', 'Category ID']
+        ]
     
-        for column in columns:
-                table_data.append(column)
+        # for column in columns:
+        #         table_data.append(column)
 
         for value in row: 
             table_data.append(value)
         
         return table_data
     
-    table = CTkTable(table_frame, values = create_table(), header_color="#57C590", hover_color="#B4B4B4", width = 155)
+
+    table = CTkTable(table_frame, values =create_table(), header_color="#57C590", hover_color="#B4B4B4", width = 155)
     table.pack(fill = "both", expand = True)
 
     

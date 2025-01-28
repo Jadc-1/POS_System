@@ -31,38 +31,44 @@ class InventoryManagement():
             self.table_content.append([ ##Estou utilizando 2 listas por conta do TreeView(precisa ser dessa forma)
             produto.id,
             produto.name,
-            produto.kg_price,
+            f"{produto.kg_price:.2f}",
             produto.quantity,
             produto.expiration_date,
             produto.enter_date,
             produto.active,
             produto.category_id,
             ])
-
-
         return self.table_content
     
-    def list_columns_table(self):
-        self.column_content = []
+    def count_products(self):
+        with Session(engine) as session:
+            statement = select(Products)
+            results = session.exec(statement).all()
 
-        ##Separei os dois laços de repetições pois a coluna repetia por conta dos produtos
-        for produto in self.list_products():
-                self.column_content.append(
-                        list(produto.model_fields.keys()) ##aqui estou usando model_fields que retorna todos os valores e chaves do banco de dados, porém utilizando keys para pegar apenas as chaves, para as colunas. Como eu quero que o resultado seja tipo [['id']], com duas listas, pois vou utilizar o CTkTable, fiz dessa forma utilizando append e list
-                    )
-                break
+            total = 0
+            for result in results:
+                total += 1
+            
+            return total
+
+    # def list_columns_table(self):
+    #     self.column_content = []
+
+    #     ##Separei os dois laços de repetições pois a coluna repetia por conta dos produtos
+    #     for produto in self.list_products():
+    #             self.column_content.append(
+    #                     list(produto.model_fields.keys()) ##aqui estou usando model_fields que retorna todos os valores e chaves do banco de dados, porém utilizando keys para pegar apenas as chaves, para as colunas. Como eu quero que o resultado seja tipo [['id']], com duas listas, pois vou utilizar o CTkTable, fiz dessa forma utilizando append e list
+    #                 )
+    #             break
     
-        return self.column_content
-
-
+    #     return self.column_content
 
 im = InventoryManagement(engine)  
 
-#coca_cola = Products(name = 'Coca Cola', kg_price = 6.50, quantity = 5, enter_date = date.today(), category_id= 2)
-#refrigerante = Categorys(name= "refrigerante")
-#im.create_product(coca_cola)
-
-#for i in im.list_products():
-    #print(f"{i.id}, {i.name}, {i.kg_price}, {i.quantity}, {i.enter_date}, {i.category_id}")
+salgados = Categorys(name = "Salgados")
 
 
+
+# coxinha = Products(name = 'Coxinha', kg_price = '27.50', quantity = 15, enter_date = date.today(), expiration_date=date(2025, 10, 21) , category_id= 3)
+
+# im.create_product(coxinha)
