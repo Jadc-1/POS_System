@@ -24,17 +24,8 @@ class InventoryManagement():
             results = session.exec(statement).all() ## Depois de selecionar, o result vai retornar para a gente a tabela, agora precisamos dizer que queremos todos os valores da tabela, com o all
             return results ##Aqui não quero adicionar nada na tabela, apenas retornar a tabela por completo ao usuário
     
-    def list_products_treeview(self):
+    def list_rows_table(self):
         self.table_content = []
-        self.column_content = []
-        
-
-        ##Separei os dois laços de repetições pois a coluna repetia por conta dos produtos
-        for produto in self.list_products():
-            self.column_content.append(
-                    list(produto.model_dump().keys()) ##aqui estou usando model_dump que retorna todos os valores como dicionarios, porém utilizando keys para pegar apenas as chaves, para as colunas. Como eu quero que o resultado seja tipo [['id']], com duas listas, pois vou utilizar o TreeView, fiz dessa forma utilizando append e list
-                )
-            break
         
         for produto in self.list_products():
             self.table_content.append([ ##Estou utilizando 2 listas por conta do TreeView(precisa ser dessa forma)
@@ -46,14 +37,27 @@ class InventoryManagement():
             produto.enter_date,
             produto.active,
             produto.category_id,
-        ])
+            ])
 
-        return self.table_content, self.column_content
+
+        return self.table_content
     
+    def list_columns_table(self):
+        self.column_content = []
+
+        ##Separei os dois laços de repetições pois a coluna repetia por conta dos produtos
+        for produto in self.list_products():
+                self.column_content.append(
+                        list(produto.model_fields.keys()) ##aqui estou usando model_fields que retorna todos os valores e chaves do banco de dados, porém utilizando keys para pegar apenas as chaves, para as colunas. Como eu quero que o resultado seja tipo [['id']], com duas listas, pois vou utilizar o CTkTable, fiz dessa forma utilizando append e list
+                    )
+                break
+    
+        return self.column_content
+
 
 
 im = InventoryManagement(engine)  
-print(im.list_products_treeview())
+
 #coca_cola = Products(name = 'Coca Cola', kg_price = 6.50, quantity = 5, enter_date = date.today(), category_id= 2)
 #refrigerante = Categorys(name= "refrigerante")
 #im.create_product(coca_cola)

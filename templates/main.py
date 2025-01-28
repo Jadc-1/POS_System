@@ -9,6 +9,7 @@ from customtkinter import *
 from PIL import Image
 from templates.inventory_app import inventory_app
 from templates.sales_report import sales_report_app
+from views.inventory_view import InventoryManagement
 
 app = CTk()
 app.geometry(f"{app.winfo_screenwidth()}x{app.winfo_screenheight()}+0+0") ##Pega a informação da largura e altura da tela e passa para o geometry
@@ -20,7 +21,7 @@ set_appearance_mode("light")
 text_font = CTkFont(family="Arial Black", size = 15, weight="bold")
 
 
-sidebar_frame = CTkFrame(master=app, fg_color=("#69F0AE"),  width=250, height=650, corner_radius=0) # Criei a sidebar, que tem como pai o app
+sidebar_frame = CTkFrame(master=app, fg_color="#69F0AE", width=250, height=650, corner_radius=0) # Criei a sidebar, que tem como pai o app
 sidebar_frame.pack_propagate(0) ## Não deixa o conteúdo da sidebar aumentar o tamanho dela
 sidebar_frame.pack(fill="y", anchor="w", side="left")
 logo_img_data = Image.open(r"images\logo_2.png")

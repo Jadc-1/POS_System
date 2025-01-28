@@ -1,8 +1,15 @@
+import __init__
+
 from customtkinter import *
 from PIL import Image
+from tkinter import ttk
+from views.inventory_view import InventoryManagement
+from models.database import engine
+from CTkTable import CTkTable
 
 
 def inventory_app(parent):
+    products_management = InventoryManagement(engine)
     title_font = CTkFont(family="Arial Black", size = 35, weight= "bold")
     page_title_frame = CTkFrame(parent, width = 100, height= 15, fg_color="#F7EBE7")
     page_title_frame.pack(fill = "x")
@@ -35,6 +42,32 @@ def inventory_app(parent):
     frame_3 = CTkFrame(infos_frame, height=50, width=50, fg_color="#57C590", corner_radius=20)
     frame_3.pack(padx = 20, fill = "both", side= "left", expand = True)
 
+    query_frame = CTkFrame(parent, height= 50, width=1270, fg_color= "#57C590")
+    query_frame.pack(padx=10, pady=(70, 0))
+
+    table_frame = CTkFrame(parent, height= 670, width= 1270, fg_color= "#57C590")
+    table_frame.pack(padx= 10, pady = (5, 80))
+    
+    def create_table():
+        row = products_management.list_rows_table()
+        columns = products_management.list_columns_table()
+
+
+
+        table_data = []
+    
+        for column in columns:
+                table_data.append(column)
+
+        for value in row: 
+            table_data.append(value)
+        
+        return table_data
+    
+    table = CTkTable(table_frame, values = create_table(), header_color="#57C590", hover_color="#B4B4B4", width = 155)
+    table.pack(fill = "both", expand = True)
+
+    
 
 
 
