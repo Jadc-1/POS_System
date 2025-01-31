@@ -11,6 +11,7 @@ from templates.inventory_app import inventory_app
 from templates.sales_report import sales_report_app
 from views.inventory_view import InventoryManagement
 
+
 app = CTk()
 app.geometry(f"{app.winfo_screenwidth()}x{app.winfo_screenheight()}+0+0") ##Pega a informação da largura e altura da tela e passa para o geometry
 app.title("UniFruti")
@@ -26,7 +27,8 @@ sidebar_frame.pack_propagate(0) ## Não deixa o conteúdo da sidebar aumentar o 
 sidebar_frame.pack(fill="y", anchor="w", side="left")
 logo_img_data = Image.open(r"images\logo_2.png")
 logo_img = CTkImage(dark_image=logo_img_data, light_image=logo_img_data, size=(120, 120))
-logo_img_label = CTkLabel(master=sidebar_frame, text="", image=logo_img).pack(pady=(38, 0), anchor="center")
+logo_img_label = CTkLabel(master=sidebar_frame, text="", image=logo_img)
+logo_img_label.pack(pady=(38, 0), anchor="center")
 
 
 #Criei uma frame para colocar o conteúdo dos botões

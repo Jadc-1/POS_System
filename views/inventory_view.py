@@ -10,8 +10,9 @@ class InventoryManagement():
 
     def create_product(self, product: Products): ## Criei uma instância product que herda da tabela Products e estou adicionando um único produto na tabela
         with Session(engine) as session:
-            session.add(product)
-            session.commit()
+                session.add(product)
+                session.commit()
+            
 
     def create_category(self, category: Categorys):
         with Session(engine) as session:
@@ -26,8 +27,9 @@ class InventoryManagement():
     
     def list_rows_table(self):
         self.table_content = []
-        
+
         for produto in self.list_products():
+            category = self.get_category_name_by_id(produto.category_id)
             self.table_content.append([ ##Estou utilizando 2 listas por conta do TreeView(precisa ser dessa forma)
             produto.id,
             produto.name,
@@ -36,10 +38,28 @@ class InventoryManagement():
             produto.expiration_date,
             produto.enter_date,
             produto.active,
-            produto.category_id,
+            category.name,
             ])
         return self.table_content
     
+    def get_category_id_by_name(self, name):
+        with Session(engine) as session:
+            statement = select(Categorys).where(Categorys.name == name)
+            result = session.exec(statement).first()
+            if result:
+                return result.id
+            else:
+                new_category = Categorys(name = name)
+                session.add(new_category)
+                session.commit()
+                return new_category.id
+
+    def get_category_name_by_id(self, category_id):
+        with Session(engine) as session:
+            statement = select(Categorys).where(Categorys.id == category_id)
+            result = session.exec(statement).first()
+            return result
+
     def count_products(self):
         with Session(engine) as session:
             statement = select(Products)
@@ -50,6 +70,14 @@ class InventoryManagement():
                 total += 1
             
             return total
+        
+    def list_categorys_name(self):
+        with Session(engine) as session:
+            statement = select(Categorys)
+            results = session.exec(statement).all()
+            category_name = [result.name for result in results]
+
+            return category_name
 
     # def list_columns_table(self):
     #     self.column_content = []
@@ -64,9 +92,6 @@ class InventoryManagement():
     #     return self.column_content
 
 im = InventoryManagement(engine)  
-
-salgados = Categorys(name = "Salgados")
-
 
 
 # coxinha = Products(name = 'Coxinha', kg_price = '27.50', quantity = 15, enter_date = date.today(), expiration_date=date(2025, 10, 21) , category_id= 3)
