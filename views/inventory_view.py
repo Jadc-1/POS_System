@@ -42,6 +42,7 @@ class InventoryManagement():
             ])
         return self.table_content
     
+    
     def get_category_id_by_name(self, name):
         with Session(engine) as session:
             statement = select(Categorys).where(Categorys.name == name)
@@ -97,3 +98,4 @@ im = InventoryManagement(engine)
 # coxinha = Products(name = 'Coxinha', kg_price = '27.50', quantity = 15, enter_date = date.today(), expiration_date=date(2025, 10, 21) , category_id= 3)
 
 # im.create_product(coxinha)
+

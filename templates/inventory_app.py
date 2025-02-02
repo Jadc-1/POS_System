@@ -9,8 +9,10 @@ from CTkTable import CTkTable
 from datetime import date,datetime
 from tkcalendar import Calendar,DateEntry
 from tkinter import PhotoImage
+import logging
 
-
+global date_choosed
+date_choosed = None
 def inventory_app(parent):
     products_management = InventoryManagement(engine)
     frame_bg_color = "#57C590"
@@ -59,29 +61,14 @@ def inventory_app(parent):
     table_frame = CTkScrollableFrame(parent, width= 1270, height = 500, fg_color= "transparent", scrollbar_button_color=frame_bg_color,)
     table_frame.pack(padx= 0, pady = (0, 80), expand= True, anchor='n',)
     
-
-    def create_table():
-        row = products_management.list_rows_table()
-
-        table_data = []
-
-        # for column in columns:
-        #         table_data.append(column)
-
-        for value in row: 
-            table_data.append(value)
-            
-        
-        return table_data
-    
     table_column_data = [
         ['ID', 'Name', 'Unit Price', 'Quantity', 'Expiration Date', 'Enter Date', 'Active', 'Category']
-    ]
 
+    ]
 
     table_column = CTkTable(table_column_frame, values= table_column_data, corner_radius = 0, text_color= "white", width = 155, header_color=frame_bg_color, font=('Verdana', 12, 'bold'))
     table_column.pack(padx = 0, pady= 0, expand = True, fill= "both")
-    table = CTkTable(table_frame, values = create_table(), hover_color="#B4B4B4", width = 155, corner_radius = 0, fg_color = "#F7EBE7")
+    table = CTkTable(table_frame, values = products_management.list_rows_table(), hover_color="#B4B4B4", width = 155, corner_radius = 0, fg_color = "#F7EBE7")
     table.pack(fill = "both",expand = True, pady=0)
 
 
@@ -141,21 +128,23 @@ def add_product_app():
     calendar_image = CTkImage(light_image=calendar_image_data, dark_image=calendar_image_data)
     expiration_date_frame = CTkFrame(product_app_frame, height=60, width=180, fg_color="white")
     expiration_date_frame.place(relx = 0.93, rely=0.62, anchor="ne")
-    expiration_date = CTkLabel(expiration_date_frame, text="Expiration date*", font=name_font, text_color= "#5E5E5E", anchor="nw", fg_color="white", width= 70, height= 20)
+    expiration_date = CTkLabel(expiration_date_frame, text="Expiration date(optional)", font=name_font, text_color= "#5E5E5E", anchor="nw", fg_color="white", width= 70, height= 20)
     expiration_date.pack(anchor="ne")
 
     def create_calendar():
         calendar_screen = CTkToplevel()
         calendar_screen.geometry("250x200+1035+607")
         calendar_screen.overrideredirect(True)
+        calendar_screen.resizable(0,0)
         calendar = Calendar(calendar_screen, mindate=date.today(), showweeknumbers=False, showothermonthdays=False, showcurrent=True, date_pattern="dd/mm/yyyy", locale="en_US", background="#56C46A", headersbackground="#53BC89", headersforeground="white", weekendbackground = "white", weekendforeground="black", selectbackground="#56C46A", selectforeground="white", font=("Arial black", 10,"normal"))
         calendar.pack(expand=True, fill="both")
         #lambda necessário, pois after precisa de uma função para rodar apos 100 ms
         calendar_screen.grab_set()
         calendar_screen.after(100, lambda: product_app.focus())
+        
         def date_updated(event):
-            global date_choosed
-            date_choosed = calendar.get_date()
+            date_choosed = str(calendar.get_date())
+            logging.debug(date_choosed)
             calendar_label.configure(text=date_choosed)
             calendar_screen.after(100, lambda:calendar_screen.destroy())
         #o método bind automaticamente passa um objeto de evento como argumento para a função date_updated quando o evento ocorre
@@ -183,13 +172,19 @@ def add_product_app():
         unit_price_value = unit_price_input.get()
         quantity_value = quantity_input.get()
         category_value = category_option.get()
-        expiration_date = datetime.strptime(date_choosed, "%d/%m/%Y")
+        if date_choosed:
+            expiration_date = datetime.strptime(date_choosed, "%d/%m/%Y")
+        else:
+            expiration_date = None 
         category_id = products_management.get_category_id_by_name(category_value)
 
         product = Products(name=name_value, kg_price=unit_price_value, quantity=quantity_value, enter_date= date.today() ,expiration_date = expiration_date, category_id= category_id)
         
         products_management.create_product(product)
+        
         product_app_frame.after(300,product_app.destroy())
+
+
         #confirm_frame = CTkFrame(product_app, fg_color="#57C590")
         # confirm_frame.pack(anchor="center", fill="both", expand=True)
         # confirm_frame.pack_propagate(0)
