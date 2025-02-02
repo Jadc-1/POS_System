@@ -68,7 +68,7 @@ def inventory_app(parent):
 
     table_column = CTkTable(table_column_frame, values= table_column_data, corner_radius = 0, text_color= "white", width = 155, header_color=frame_bg_color, font=('Verdana', 12, 'bold'))
     table_column.pack(padx = 0, pady= 0, expand = True, fill= "both")
-    table = CTkTable(table_frame, values = products_management.list_rows_table(), hover_color="#B4B4B4", width = 155, corner_radius = 0, fg_color = "#F7EBE7")
+    table = CTkTable(table_frame, values = products_management.create_table_view(), hover_color="#B4B4B4", width = 155, corner_radius = 0, fg_color = "#F7EBE7")
     table.pack(fill = "both",expand = True, pady=0)
 
 
