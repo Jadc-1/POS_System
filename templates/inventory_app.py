@@ -54,7 +54,7 @@ def inventory_app(parent):
     query_frame.pack(padx=(0,10), pady=(70, 0)) #"#F7EBE7"#EFE4E1
     query_frame.pack_propagate(0)
 
-    query_entry = CTkEntry(query_frame, corner_radius=10, fg_color="white", placeholder_text="Search by product", width=400)
+    query_entry = CTkEntry(query_frame, corner_radius=10, fg_color="white", placeholder_text="Search by product...", width=400)
     query_entry.pack(pady=(7,5), fill = "y", anchor="w", side="left")
 
     def search_table():

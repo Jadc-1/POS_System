@@ -18,7 +18,7 @@ class InventoryManagement():
             
     def list_query_products(self, query):
         with Session(engine) as session:
-            statement = select(Products, Categorys.name).join(Categorys).where(or_(Products.name == query, Categorys.name == query)) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
+            statement = select(Products, Categorys.name).join(Categorys).where(or_(Products.name.like(f"%{query}%"), Categorys.name == query)) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
             results = session.exec(statement).all() ## Depois de selecionar, o result vai retornar para a gente a tabela, agora precisamos dizer que queremos todos os valores da tabela, com o all
 
             self.table_content = []
