@@ -3,7 +3,7 @@ from models.database import engine ## Importando o engine que a gente criou no d
 from models.model import Products, Categorys ## Importando as tabelas
 from sqlmodel import Session, select, text
 from datetime import date
-from sqlalchemy.orm import aliased
+from sqlalchemy import or_
 
 class InventoryManagement():
     def __init__(self, engine):
@@ -14,44 +14,56 @@ class InventoryManagement():
                 session.add(product)
                 session.commit()
             
-
-    def create_category(self, category: Categorys):
+    def list_query_products(self, query):
         with Session(engine) as session:
-            session.add(category)
-            session.commit()
-
-    def list_products(self):
-        with Session(engine) as session:
-            statement = select(Products) ## statement é geralmente usado para consulta, ele vai selecionar todos os produtos da tabela Products
+            statement = select(Products, Categorys.name).join(Categorys).where(or_(Products.name == query, Categorys.name == query) ) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
             results = session.exec(statement).all() ## Depois de selecionar, o result vai retornar para a gente a tabela, agora precisamos dizer que queremos todos os valores da tabela, com o all
-            return results ##Aqui não quero adicionar nada na tabela, apenas retornar a tabela por completo ao usuário
-    
-    def create_table_view(self):
-        with Session(engine) as session:
-            statement = select(Products, Categorys.name.label("category_name")).join(Categorys).where(Products.category_id == Categorys.id)
-            results = session.exec(statement).all()
-            self.table_content = []
 
+            self.table_content = []
             for products, category in results: ##Como a consulta tem o join, ele retorna uma tupla, com valores de Products e Categorys,é preciso criar um for que pegue os dois valores
                 self.table_content.append([
                     products.id,
                     products.name,
                     f"{products.kg_price:.2f}",
                     products.quantity,
-                    products.expiration_date,
                     products.enter_date,
+                    products.expiration_date,
                     products.active,
                     category,
                 ])
             return self.table_content
-        
-
-    def get_category_name_by_id(self, category_id):
+    
+    def create_table_view(self):
         with Session(engine) as session:
-            statement = select(Categorys).where(Categorys.id == category_id)
+            statement = select(Products, Categorys.name).join(Categorys)
+            results = session.exec(statement).all()
+            
+            self.table_content = []
+            for products, category in results: ##Como a consulta tem o join, ele retorna uma tupla, com valores de Products e Categorys,é preciso criar um for que pegue os dois valores
+                self.table_content.append([
+                    products.id,
+                    products.name,
+                    f"{products.kg_price:.2f}",
+                    products.quantity,
+                    products.enter_date,
+                    products.expiration_date,
+                    products.active,
+                    category,
+                ])
+            return self.table_content
+           
+    def get_category_id_by_name(self, name):
+        with Session(engine) as session:
+            statement = select(Categorys).where(Categorys.name == name)
             result = session.exec(statement).first()
-            return result
-
+            if result:
+                return result.id
+            else:
+                new_category = Categorys(name = name)
+                session.add(new_category)
+                session.commit()
+                return new_category.id
+            
     def count_products(self):
         with Session(engine) as session:
             statement = select(Products)
@@ -85,6 +97,14 @@ im = InventoryManagement(engine)
 
 # FUNCTIONS THAT I'M NOT USING ANYMORE, BUT COULD USE LATER:
 
+# def get_category_name_by_id(self, category_id):
+#     with Session(engine) as session:
+#         statement = select(Categorys).where(Categorys.id == category_id)
+#         result = session.exec(statement).first()
+#         return result
+
+ 
+ 
  # def get_category_id_by_name(self, name):
     #     with Session(engine) as session:
     #         statement = select(Categorys).where(Categorys.name == name)

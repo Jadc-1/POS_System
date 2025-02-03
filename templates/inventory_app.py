@@ -52,8 +52,35 @@ def inventory_app(parent):
     frame_3 = CTkFrame(infos_frame, height=50, width=50, fg_color=frame_bg_color, corner_radius=20)
     frame_3.pack(padx = 20, fill = "both", side= "left", expand = True)
 
-    query_frame = CTkFrame(parent, height= 50, width=1270)
-    query_frame.pack(padx=10, pady=(70, 0))
+    query_frame = CTkFrame(parent, height= 50, width=1270, fg_color="#F7EBE7")
+    query_frame.pack(padx=(0,10), pady=(70, 0)) #"#F7EBE7"#EFE4E1
+    query_frame.pack_propagate(0)
+
+    query_entry = CTkEntry(query_frame, corner_radius=10, fg_color="white", placeholder_text="Search by product or category...", width=400)
+    query_entry.pack(pady=(7,5), fill = "y", anchor="w", side="left")
+
+    def search_table():
+        query = query_entry.get()
+        table.configure(values = products_management.list_query_products(query))
+
+
+    search_data = Image.open(r"images\search.png")
+    search_image = CTkImage(light_image=search_data, dark_image=search_data, size=(25,25))    
+    query_search = CTkButton(query_frame, corner_radius=10, width = 40, anchor="w", text="", fg_color="#57C590", hover_color="#49A578", image=search_image, command=search_table)
+    query_search.pack_propagate(0)
+    query_search.pack(pady=(9,7), padx=(2,0), fill = "y", side="left", anchor="center")
+
+    def clear_entry():
+        query_entry.delete(0, "end") #Deleta do primeiro caracter até o final
+        total_value_frame.focus_set()
+        table.configure(values = products_management.create_table_view())
+    
+
+    clean_data = Image.open(r"images\clean.png")
+    clean_image = CTkImage(light_image=clean_data, dark_image=clean_data, size=(25,25))    
+    query_clean = CTkButton(query_frame, corner_radius=10, width = 40, anchor="w", text="", fg_color="#57C590", hover_color="#49A578", image=clean_image, command=clear_entry) ##Sem parentes pois não queremos que a função seja chamada direto, apenas quando clicar no botão
+    query_clean.pack_propagate(0)
+    query_clean.pack(pady=(9,7), padx=(2,0), fill = "y", side="left", anchor="center")
 
     table_column_frame = CTkFrame(parent, width=1270, height=25, fg_color= "transparent")
     table_column_frame.pack(padx=(0,8),pady=(3,0))
@@ -62,7 +89,7 @@ def inventory_app(parent):
     table_frame.pack(padx= 0, pady = (0, 80), expand= True, anchor='n',)
     
     table_column_data = [
-        ['ID', 'Name', 'Unit Price', 'Quantity', 'Expiration Date', 'Enter Date', 'Active', 'Category']
+        ['ID', 'Name', 'Unit Price', 'Quantity', 'Enter Date', 'Expiration Date', 'Active', 'Category']
 
     ]
 
