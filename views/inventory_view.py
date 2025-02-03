@@ -4,6 +4,8 @@ from models.model import Products, Categorys ## Importando as tabelas
 from sqlmodel import Session, select, text
 from datetime import date
 from sqlalchemy import or_
+import unicodedata
+import re
 
 class InventoryManagement():
     def __init__(self, engine):
@@ -16,7 +18,7 @@ class InventoryManagement():
             
     def list_query_products(self, query):
         with Session(engine) as session:
-            statement = select(Products, Categorys.name).join(Categorys).where(or_(Products.name == query, Categorys.name == query) ) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
+            statement = select(Products, Categorys.name).join(Categorys).where(or_(Products.name == query, Categorys.name == query)) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
             results = session.exec(statement).all() ## Depois de selecionar, o result vai retornar para a gente a tabela, agora precisamos dizer que queremos todos os valores da tabela, com o all
 
             self.table_content = []
@@ -26,8 +28,8 @@ class InventoryManagement():
                     products.name,
                     f"{products.kg_price:.2f}",
                     products.quantity,
-                    products.enter_date,
                     products.expiration_date,
+                    products.enter_date,
                     products.active,
                     category,
                 ])
@@ -45,8 +47,8 @@ class InventoryManagement():
                     products.name,
                     f"{products.kg_price:.2f}",
                     products.quantity,
-                    products.enter_date,
                     products.expiration_date,
+                    products.enter_date,
                     products.active,
                     category,
                 ])
@@ -90,7 +92,6 @@ im = InventoryManagement(engine)
 # coxinha = Products(name = 'Coxinha', kg_price = '27.50', quantity = 15, enter_date = date.today(), expiration_date=date(2025, 10, 21) , category_id= 3)
 
 # im.create_product(coxinha)
-
 
 
 
