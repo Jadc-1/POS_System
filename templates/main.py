@@ -57,7 +57,7 @@ sidebar_inventory = CTkButton(master= sidebar_frame, text="Inventory", text_colo
 sidebar_inventory.pack(pady=(150,10), padx=(30))
 
 sales_report_image_data = Image.open(r"images\sales_report_image.png")
-sales_report_image = CTkImage(dark_image=sales_report_image_data, light_image= sales_report_image_data, size=(25,25))
+sales_report_image = CTkImage(dark_image=sales_report_image_data, light_image= sales_report_image_data, size=(15,15))
 sidebar_sales_report = CTkButton(master=sidebar_frame, text="Sales Report", text_color="#FFFFFF", fg_color="#4CAF50", corner_radius=15, height=40, width=400, font=text_font, hover_color="#007900", command=lambda: button_onclick(sidebar_sales_report, content), image = sales_report_image, anchor="w")
 sidebar_sales_report.pack(pady=10, padx=30, anchor="center") 
 ##

@@ -45,10 +45,36 @@ def inventory_app(parent):
     total_products.pack(padx = 5, pady = (5, 15), anchor = "s", side = "bottom")
     
 
-    frame_2 = CTkFrame(infos_frame, height=50, width=50, fg_color=frame_bg_color, corner_radius=20)
-    frame_2.pack(padx = 20, fill = "both", side="left", expand = True)
-    frame_3 = CTkFrame(infos_frame, height=50, width=50, fg_color=frame_bg_color, corner_radius=20)
-    frame_3.pack(padx = 20, fill = "both", side= "left", expand = True)
+    category_frame = CTkFrame(infos_frame, height=50, width=50, fg_color=frame_bg_color, corner_radius=20)
+    category_frame.pack(padx = 20, fill = "both", side="left", expand = True)
+    category_frame.pack_propagate(0)
+    category_image_data = Image.open(r"images\categorization.png")
+    category_image = CTkImage(light_image=category_image_data, dark_image=category_image_data, size=(70,70))
+    category_image_label = CTkLabel(category_frame, text="", image = category_image)
+    category_image_label.pack(pady = (15, 5), padx = 0)
+    category_text_label = CTkLabel(category_frame, font=infos_frame_font, text_color="#FFFFFF", text="Total Categories")
+    category_text_label.place(relx = 0.5, rely = 0.5, anchor = "center")
+    category_text_label.pack(pady = 3)
+    category_total = CTkLabel(master = category_frame, text = f"{products_management.get_total_categories()}", font =("Verdana", 25, "bold"), text_color= "#FFFFFF")
+    category_total.pack(padx = 5, pady = (5, 15), anchor = "s", side = "bottom")
+
+    stock_value_frame = CTkFrame(infos_frame, height=50, width=50, fg_color=frame_bg_color, corner_radius=20)
+    stock_value_frame.pack(padx = 20, fill = "both", side="left", expand = True)
+    stock_value_frame.pack_propagate(0)
+    stock_value_image_data = Image.open(r"images\increase.png")
+    stock_value_image = CTkImage(light_image=stock_value_image_data, dark_image=stock_value_image_data, size=(70,70))
+    stock_value_image_label = CTkLabel(stock_value_frame, text="", image = stock_value_image)
+    stock_value_image_label.place(relx = 0.5, rely = 0.5, anchor = "center")
+    stock_value_image_label.pack(pady = (15, 5), padx = 0)
+    stock_value_text_label = CTkLabel(stock_value_frame, font=infos_frame_font, text_color="#FFFFFF", text="Stock Value")
+    stock_value_text_label.place(relx = 0.5, rely = 0.5, anchor = "center")
+    stock_value_text_label.pack(pady = 3)
+    stock_value = CTkLabel(master = stock_value_frame, text = f"{products_management.get_stock_value()}", font =("Verdana", 25, "bold"), text_color= "#FFFFFF")
+    stock_value.pack(padx = 5, pady = (5, 15), anchor = "s", side = "bottom")
+
+
+
+
 
     query_frame = CTkFrame(parent, height= 50, width=1270, fg_color="#F7EBE7")
     query_frame.pack(padx=(0,10), pady=(70, 0)) #"#F7EBE7"#EFE4E1
@@ -69,7 +95,7 @@ def inventory_app(parent):
         change_focus()
         query_entry.delete(0, "end") #Deleta do primeiro caracter até o final
         table.configure(values = products_management.create_table_view())
-        choose_category.set("Categorys")
+        choose_category.set("Categories")
     
     def change_focus():
         return total_value_frame.focus_set()
@@ -89,14 +115,14 @@ def inventory_app(parent):
     query_clean.pack(pady=(9,7), padx=(2,0), fill = "y", side="left", anchor="center")
 
 
-    choose_category = CTkComboBox(query_frame, values = products_management.list_categorys_name(), text_color="#5E5E5E", font = ("Verdana", 12, "bold"), fg_color="white", button_color="#CECECE", button_hover_color="#B7B7B7", corner_radius= 10, dropdown_fg_color="white", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 12, "bold"), border_color="#CECECE", width= 200, height=40)
+    choose_category = CTkComboBox(query_frame, values = products_management.list_categories_name(), text_color="#5E5E5E", font = ("Verdana", 12, "bold"), fg_color="white", button_color="#CECECE", button_hover_color="#B7B7B7", corner_radius= 10, dropdown_fg_color="white", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 12, "bold"), border_color="#CECECE", width= 200, height=40)
     choose_category.pack(padx = (225,0), pady=(9,5), side="left", anchor= "w")
-    choose_category.set("Categorys")
+    choose_category.set("Categories")
     category_search = CTkButton(query_frame, corner_radius=10, width = 20, height= 30, anchor="w", text="", fg_color="#57C590", hover_color="#49A578", image=search_image, command=search_category)
     category_search.pack_propagate(0)
     category_search.pack(pady=(9,3), padx=(3,0), side="left", anchor="center")
 
-    delete_button = CTkButton(query_frame, text = "- Delete", text_color= "white", font=add_button_font, corner_radius=20, fg_color="red", hover_color="#4CAF50",anchor= "center", command=lambda: add_product_app(), width = 25)
+    delete_button = CTkButton(query_frame, text = "- Delete", text_color= "white", font=add_button_font, corner_radius=20, fg_color="#AA3939", hover_color="#8B2F2F",anchor= "center", command=lambda: delete_product_app(), width = 25)
     delete_button.pack(pady = (9,7), anchor = "ne", side="right", fill="y")
     create_button = CTkButton(query_frame, text = "+ Add", text_color= "white", font=add_button_font, corner_radius=20, fg_color=frame_bg_color, hover_color="#4CAF50",anchor= "center", command=lambda: add_product_app(), width = 25)
     create_button.pack(padx=5,pady = (9,7), anchor = "ne", side="right", fill="y")
@@ -121,7 +147,6 @@ def inventory_app(parent):
 def add_product_app():
     products_management = InventoryManagement(engine)
     product_app = CTkToplevel()
-    product_app.focus()
     name_font = CTkFont("Verdana", 13, "normal")
     product_app.title("Add Product")
     product_app.geometry("500x600+700+150")
@@ -167,7 +192,7 @@ def add_product_app():
     category_frame.pack(anchor="w", padx = (30,0), pady=(25,10))
     category = CTkLabel(category_frame, text="Category*(write or choose)", font=name_font, text_color= "#5E5E5E", anchor="nw", fg_color="white", width= 70, height= 20)
     category.pack(anchor="nw")
-    category_option = CTkComboBox(category_frame, values = products_management.list_categorys_name(), text_color="#5E5E5E", font = ("Verdana", 13, "bold"), height=32, width= 200, fg_color="#DEDEDE", button_color="#DEDEDE", button_hover_color="#BCBCBC", corner_radius= 10, dropdown_fg_color="#DEDEDE", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 13, "bold"), border_width=0)
+    category_option = CTkComboBox(category_frame, values = products_management.list_categories_name(), text_color="#5E5E5E", font = ("Verdana", 13, "bold"), height=32, width= 200, fg_color="#DEDEDE", button_color="#DEDEDE", button_hover_color="#BCBCBC", corner_radius= 10, dropdown_fg_color="#DEDEDE", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 13, "bold"), border_width=0)
     category_option.pack(pady=(5,10))
 
     calendar_image_data = Image.open(r"images\calendar_1.png")
@@ -238,7 +263,57 @@ def add_product_app():
             # confirm = CTkLabel(confirm_frame, text="Product Created!", fg_color="#57C590", font=("Verdana", 25, "bold"), text_color="white", anchor="center")
             # confirm.pack()
             # confirm.place(rely=0.45, relx=0.25)
-            
+
+def delete_product_app(): 
+    products_management = InventoryManagement(engine)
+    delete_app = CTkToplevel()
+    delete_app.title("Delete products")
+    delete_app.geometry("500x300+700+250")
+    delete_app.after(100, lambda: delete_app.focus())
+
+    delete_app_frame = CTkFrame(delete_app, fg_color="white")
+    delete_app_frame.pack(fill = "both", expand = True)
+
+    # def close_app():
+    #     delete_button.configure(image = delete_image_white)
+    #     delete_app.after(50,delete_app.destroy)
+    
+    # delete_image_data_white = Image.open(r"images\close_white.png")
+    # delete_image_white = CTkImage(light_image=delete_image_data_white, dark_image=delete_image_data_white, size=(25,25))
+    # delete_image_data = Image.open(r"images\clear.png")
+    # delete_image_frame = CTkFrame(delete_app, fg_color="white")
+    # delete_image_frame.pack(padx=(5,0), pady=(6,0))
+    # delete_image_frame.place(relx=0.89, rely=0)
+    # delete_image = CTkImage(light_image=delete_image_data, dark_image=delete_image_data, size=(25,25))
+    # delete_button = CTkButton(delete_image_frame, image=delete_image, text="", anchor="center", width=40, fg_color="white", hover_color="white", command=close_app)
+    # delete_button.pack()
+
+    main_title_frame = CTkFrame(delete_app_frame, height=60, width=60, fg_color="white")
+    main_title_frame.pack(anchor="center", fill= "x")
+
+    main_title = CTkLabel(main_title_frame, height= 30, width= 30, text = "Delete product", text_color="#5E5E5E", font=("Arial", 20, "bold"))
+    main_title.pack(padx= 10, pady= (30,10))
+
+    name_frame = CTkFrame(delete_app_frame, height=50,width=60, fg_color="white")
+    name_frame.pack(anchor = "center", fill="x", pady=(30,0))
+    product_name = CTkLabel(name_frame, text="Name*", font=("Verdana", 14, "normal"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
+    product_name.pack(padx=(30,0), fill="x", anchor="nw")
+    name_input = CTkEntry(name_frame, placeholder_text="Enter product name", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
+    name_input.pack(pady=(1,10), padx=(30,0), anchor="w", side="bottom")
+
+    def get_name_to_delete():
+        delete_input = name_input.get()
+        products_management.delete_product(delete_input)
+        delete_app.after(100, delete_app.destroy())
+        return delete_input
+
+    delete_frame = CTkFrame(delete_app_frame, height=45, width=190, fg_color="white", corner_radius=15)
+    delete_frame.pack(side="bottom", pady=(0,45))
+    delete_frame.pack_propagate(0)
+    delete_label = CTkButton(delete_frame, text="Delete", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#AA3939", hover_color="#8B2F2F", command=lambda: get_name_to_delete())
+    delete_label.pack(expand=True, fill="both")
+
+
             
         
 

@@ -26,7 +26,7 @@ class InventoryManagement():
                 self.table_content.append([
                     products.id,
                     products.name,
-                    f"{products.kg_price:.2f}",
+                    f"R$ {products.kg_price:.2f}",
                     products.quantity,
                     products.expiration_date,
                     products.enter_date,
@@ -34,6 +34,13 @@ class InventoryManagement():
                     category,
                 ])
             return self.table_content
+        
+    def delete_product(self, name):
+        with Session(engine) as session:
+            statement = select(Products).where(Products.name == name)
+            result = session.exec(statement).first()
+            session.delete(result)
+            session.commit()
     
     def create_table_view(self):
         with Session(engine) as session:
@@ -45,7 +52,7 @@ class InventoryManagement():
                 self.table_content.append([
                     products.id,
                     products.name,
-                    f"{products.kg_price:.2f}",
+                    f"R$ {products.kg_price:.2f}",
                     products.quantity,
                     products.expiration_date,
                     products.enter_date,
@@ -77,7 +84,7 @@ class InventoryManagement():
             
             return total
         
-    def list_categorys_name(self):
+    def list_categories_name(self):
         with Session(engine) as session:
             statement = select(Categorys)
             results = session.exec(statement).all()
@@ -85,6 +92,23 @@ class InventoryManagement():
 
             return category_name
 
+    def get_total_categories(self):
+        with Session(engine) as session:
+            statement = select(Categorys)
+            results = session.exec(statement).all()
+            total = 0
+            for category in results:
+                total += 1
+            return total
+
+    def get_stock_value(self):
+        with Session(engine) as session:
+            statement = select(Products.kg_price, Products.quantity)
+            results = session.exec(statement).all()
+            total = 0
+            for result in results:
+                total += (result.kg_price * result.quantity)
+        return f"R$ {total:.2f}"
 
 im = InventoryManagement(engine)  
 
@@ -93,7 +117,7 @@ im = InventoryManagement(engine)
 
 # im.create_product(coxinha)
 
-
+im.get_stock_value()
 
 
 # FUNCTIONS THAT I'M NOT USING ANYMORE, BUT COULD USE LATER:
