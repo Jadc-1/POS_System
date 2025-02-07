@@ -8,7 +8,7 @@ from models.database import engine
 from CTkTable import CTkTable
 from datetime import date,datetime
 from tkcalendar import Calendar,DateEntry
-from tkinter import PhotoImage
+from tkinter import PhotoImage, Toplevel
 import logging
 
 global date_choosed
@@ -89,7 +89,7 @@ def inventory_app(parent):
 
     def search_category():
         query = choose_category.get()
-        table.configure(values = products_management.list_query_products(query))
+        table.configure(values = products_management.list_query_categories(query))
 
     def clear_entry():
         change_focus()
@@ -268,12 +268,77 @@ def delete_product_app():
     products_management = InventoryManagement(engine)
     delete_app = CTkToplevel()
     delete_app.title("Delete products")
-    delete_app.geometry("500x300+700+250")
+    delete_app.geometry("500x300+750+350")
     delete_app.after(100, lambda: delete_app.focus())
+   
 
-    delete_app_frame = CTkFrame(delete_app, fg_color="white")
-    delete_app_frame.pack(fill = "both", expand = True)
+    delete_app_mainframe = CTkFrame(delete_app, fg_color="white")
+    delete_app_mainframe.pack(fill="both", expand=True)
+    delete_app_mainframe.pack_propagate(0)
 
+    delete_tab = CTkTabview(delete_app_mainframe, fg_color="white", segmented_button_selected_color="#66C39B", segmented_button_selected_hover_color="#82DEB8", segmented_button_unselected_hover_color="#4E4E4E", text_color="#FFFFFF", anchor="nw")  
+    delete_tab.pack(fill="both", expand=True, padx= 3, pady=3)
+    delete_tab.pack_propagate(0)
+
+
+    #Tag do produto ====================
+
+    products_tab = delete_tab.add("    Products    ")
+
+    delete_product_frame = CTkFrame(products_tab, fg_color="white")
+    delete_product_frame.pack_propagate(0)
+    delete_product_frame.pack(fill = "both", expand = True)
+
+    name_frame = CTkFrame(delete_product_frame, height=50,width=60, fg_color="white")
+    name_frame.pack(anchor = "center", fill="x", pady=(30,0))
+    product_name = CTkLabel(name_frame, text="Name", font=("Verdana", 16, "bold"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
+    product_name.pack(padx=(15,0), pady=(0,3), fill="x", anchor="nw")
+    name_input = CTkEntry(name_frame, placeholder_text="Enter product name to delete", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
+    name_input.pack(pady=(1,10), padx=(15,0), anchor="w", side="bottom")
+
+    def get_product_to_delete():
+        delete_input = name_input.get()
+        products_management.delete_product(delete_input)
+        delete_app.after(100, delete_app.destroy())
+        return delete_input
+
+    delete_frame = CTkFrame(delete_product_frame, height=45, width=190, fg_color="white", corner_radius=15)
+    delete_frame.pack(side="bottom", pady=(0,45))
+    delete_frame.pack_propagate(0)
+    product_button = CTkButton(delete_frame, text="Delete", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#AA3939", hover_color="#8B2F2F", command=lambda: get_product_to_delete())
+    product_button.pack(expand=True, fill="both")
+
+    #Tab da categoria ==============
+
+    categories_tab = delete_tab.add("    Categories    ")
+
+    delete_category_frame = CTkFrame(categories_tab, fg_color="white")
+    delete_category_frame.pack_propagate(0)
+    delete_category_frame.pack(fill = "both", expand = True)
+
+
+    category_frame = CTkFrame(delete_category_frame, height=50,width=60, fg_color="white")
+    category_frame.pack(anchor = "center", fill="x", pady=(30,0))
+    category_name = CTkLabel(category_frame, text="Category", font=("Verdana", 16, "bold"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
+    category_name.pack(padx=(15,0), pady=(0,3), fill="x", anchor="nw")
+    category_input = CTkEntry(category_frame, placeholder_text="Enter category name to delete", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
+    category_input.pack(pady=(1,10), padx=(15,0), anchor="w", side="bottom")
+
+    def get_category_to_delete():
+        delete_input = category_input.get()
+        products_management.delete_category(delete_input)
+        delete_app.after(100, delete_app.destroy())
+        return delete_input
+
+    delete_category = CTkFrame(delete_category_frame, height=45, width=190, fg_color="white", corner_radius=15)
+    delete_category.pack(side="bottom", pady=(0,45))
+    delete_category.pack_propagate(0)
+    category_button = CTkButton(delete_category, text="Delete", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#AA3939", hover_color="#8B2F2F", command=lambda: get_category_to_delete())
+    category_button.pack(expand=True, fill="both")
+            
+    delete_tab._segmented_button.configure(height = 30, font =("Verdana", 12, "bold"))  
+    
+          
     # def close_app():
     #     delete_button.configure(image = delete_image_white)
     #     delete_app.after(50,delete_app.destroy)
@@ -281,41 +346,12 @@ def delete_product_app():
     # delete_image_data_white = Image.open(r"images\close_white.png")
     # delete_image_white = CTkImage(light_image=delete_image_data_white, dark_image=delete_image_data_white, size=(25,25))
     # delete_image_data = Image.open(r"images\clear.png")
-    # delete_image_frame = CTkFrame(delete_app, fg_color="white")
+    # delete_image_frame = CTkFrame(delete_app_mainframe, fg_color="white")
     # delete_image_frame.pack(padx=(5,0), pady=(6,0))
-    # delete_image_frame.place(relx=0.89, rely=0)
-    # delete_image = CTkImage(light_image=delete_image_data, dark_image=delete_image_data, size=(25,25))
+    # delete_image_frame.place(relx=0.89, rely=0.01)
+    # delete_image = CTkImage(light_image=delete_image_data, dark_image=delete_image_data, size=(15,15))
     # delete_button = CTkButton(delete_image_frame, image=delete_image, text="", anchor="center", width=40, fg_color="white", hover_color="white", command=close_app)
-    # delete_button.pack()
-
-    main_title_frame = CTkFrame(delete_app_frame, height=60, width=60, fg_color="white")
-    main_title_frame.pack(anchor="center", fill= "x")
-
-    main_title = CTkLabel(main_title_frame, height= 30, width= 30, text = "Delete product", text_color="#5E5E5E", font=("Arial", 20, "bold"))
-    main_title.pack(padx= 10, pady= (30,10))
-
-    name_frame = CTkFrame(delete_app_frame, height=50,width=60, fg_color="white")
-    name_frame.pack(anchor = "center", fill="x", pady=(30,0))
-    product_name = CTkLabel(name_frame, text="Name*", font=("Verdana", 14, "normal"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
-    product_name.pack(padx=(30,0), fill="x", anchor="nw")
-    name_input = CTkEntry(name_frame, placeholder_text="Enter product name", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
-    name_input.pack(pady=(1,10), padx=(30,0), anchor="w", side="bottom")
-
-    def get_name_to_delete():
-        delete_input = name_input.get()
-        products_management.delete_product(delete_input)
-        delete_app.after(100, delete_app.destroy())
-        return delete_input
-
-    delete_frame = CTkFrame(delete_app_frame, height=45, width=190, fg_color="white", corner_radius=15)
-    delete_frame.pack(side="bottom", pady=(0,45))
-    delete_frame.pack_propagate(0)
-    delete_label = CTkButton(delete_frame, text="Delete", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#AA3939", hover_color="#8B2F2F", command=lambda: get_name_to_delete())
-    delete_label.pack(expand=True, fill="both")
-
-
-            
-        
+    # delete_button.pack(pady=(10,0))
 
             
 

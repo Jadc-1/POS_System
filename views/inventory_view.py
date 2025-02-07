@@ -15,25 +15,39 @@ class InventoryManagement():
         with Session(engine) as session:
                 session.add(product)
                 session.commit()
-            
+                
+    def _list_products(self, results):
+        self.table_content = []
+        for products, category in results: ##Como a consulta tem o join, ele retorna uma tupla, com valores de Products e Categorys,é preciso criar um for que pegue os dois valores
+            self.table_content.append([
+                products.id,
+                products.name,
+                f"R$ {products.kg_price:.2f}",
+                products.quantity,
+                products.expiration_date,
+                products.enter_date,
+                products.active,
+                category,
+            ])
+        return self.table_content
+
     def list_query_products(self, query):
         with Session(engine) as session:
-            statement = select(Products, Categorys.name).join(Categorys).where(or_(Products.name.like(f"%{query}%"), Categorys.name == query)) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
+            statement = select(Products, Categorys.name).join(Categorys).where(Products.name.like(f"%{query}%")) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
             results = session.exec(statement).all() ## Depois de selecionar, o result vai retornar para a gente a tabela, agora precisamos dizer que queremos todos os valores da tabela, com o all
 
-            self.table_content = []
-            for products, category in results: ##Como a consulta tem o join, ele retorna uma tupla, com valores de Products e Categorys,é preciso criar um for que pegue os dois valores
-                self.table_content.append([
-                    products.id,
-                    products.name,
-                    f"R$ {products.kg_price:.2f}",
-                    products.quantity,
-                    products.expiration_date,
-                    products.enter_date,
-                    products.active,
-                    category,
-                ])
-            return self.table_content
+            self.table = self._list_products(results)
+            
+            return self.table
+        
+    def list_query_categories(self, query):
+        with Session(engine) as session:
+            statement = select(Products,Categorys.name).join(Categorys).where(Categorys.name == query)
+            results = session.exec(statement).all()
+
+            self.table = self._list_products(results)
+
+            return self.table
         
     def delete_product(self, name):
         with Session(engine) as session:
@@ -41,25 +55,22 @@ class InventoryManagement():
             result = session.exec(statement).first()
             session.delete(result)
             session.commit()
+
+    def delete_category(self,name):
+        with Session(engine) as session:
+            statement = select(Categorys).where(Categorys.name == name)
+            results = session.exec(statement).first()
+            session.delete(results)
+            session.commit()
     
     def create_table_view(self):
         with Session(engine) as session:
             statement = select(Products, Categorys.name).join(Categorys)
             results = session.exec(statement).all()
             
-            self.table_content = []
-            for products, category in results: ##Como a consulta tem o join, ele retorna uma tupla, com valores de Products e Categorys,é preciso criar um for que pegue os dois valores
-                self.table_content.append([
-                    products.id,
-                    products.name,
-                    f"R$ {products.kg_price:.2f}",
-                    products.quantity,
-                    products.expiration_date,
-                    products.enter_date,
-                    products.active,
-                    category,
-                ])
-            return self.table_content
+            self.table = self._list_products(results)
+
+            return self.table
            
     def get_category_id_by_name(self, name):
         with Session(engine) as session:
@@ -116,9 +127,6 @@ im = InventoryManagement(engine)
 # coxinha = Products(name = 'Coxinha', kg_price = '27.50', quantity = 15, enter_date = date.today(), expiration_date=date(2025, 10, 21) , category_id= 3)
 
 # im.create_product(coxinha)
-
-im.get_stock_value()
-
 
 # FUNCTIONS THAT I'M NOT USING ANYMORE, BUT COULD USE LATER:
 
