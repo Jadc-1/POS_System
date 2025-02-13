@@ -1,11 +1,12 @@
 import __init__
+import os
 from models.database import engine ## Importando o engine que a gente criou no database.py
 from models.model import Products, Categorys ## Importando as tabelas
-from sqlmodel import Session, select, text
-from datetime import date
-from sqlalchemy import or_
-import unicodedata
-import re
+from sqlmodel import Session, select
+from datetime import date, datetime
+import pandas as pd
+from tkinter import filedialog
+from customtkinter import CTkLabel
 
 class InventoryManagement():
     def __init__(self, engine):
@@ -15,6 +16,7 @@ class InventoryManagement():
         with Session(engine) as session:
                 session.add(product)
                 session.commit()
+                session.refresh(product)
                 
     def _list_products(self, results):
         self.table_content = []
@@ -120,8 +122,60 @@ class InventoryManagement():
             for result in results:
                 total += (result.kg_price * result.quantity)
         return f"R$ {total:.2f}"
+    
+    def choose_file(self):
+        self.file = str(filedialog.askopenfilename(
+            title="Choose a file",
+            filetypes=[("Excel file", '.xlsx', '.xls'),("Txt file", '.txt')]
+        ))
+
+        if self.file:
+            self.convert_file(self.file)
+
+    def convert_file(self, file):
+        #Verifica a extensão do arquivo
+        self.file_path = file
+        #Separo o nome da extensão
+        self.file_name, self.file_extension = os.path.splitext(file)
+
+        if self.file_extension in ['.xlsx', '.xls']:
+            self.df = pd.read_excel(file, skiprows=1)
+            self.df_name = file.replace(self.file_extension, ".txt")
+            self.df.to_csv(self.df_name, sep=",", index=False)
+            self._add_products(self.df_name)
+        elif self.file_extension == ".txt":
+            self._add_products(self.file_path)
+        else: 
+            return None
+
+    def _add_products(self, file):
+        with open(file, "r", encoding="UTF-8") as openfile:
+            for index,line in enumerate(openfile):
+                self.name = line.split(",")[0].strip()
+                self.price = float(line.split(",")[1].strip())
+                self.quantity = int(line.split(",")[2].strip())
+                if index == 0:
+                    if "Unammed" in line.split(",")[3]:
+                        self.enter_date = datetime.strptime(line.split(",")[4], "%Y-%m-%d %H:%M:%S").date() #Transformo todo o codigo em um tipo de dado date
+                        self.category = self.get_category_id_by_name(line.split(",")[5].strip())
+                        product = Products(name=self.name, kg_price=self.price, quantity=self.quantity, expiration_date=None, enter_date=self.enter_date, category_id=self.category)
+                else:
+                    if line.split(",")[3] == "":
+                        self.enter_date = datetime.strptime(line.split(",")[4], "%Y-%m-%d").date() #Transformo todo o codigo em um tipo de dado date
+                        self.category = self.get_category_id_by_name(line.split(",")[5].strip())
+                        product = Products(name=self.name, kg_price=self.price, quantity=self.quantity, expiration_date=None, enter_date=self.enter_date, category_id=self.category)
+
+                    else:
+                        self.expiration_date = datetime.strptime(line.split(",")[3], "%Y-%m-%d").date()
+                        self.enter_date = datetime.strptime(line.split(",")[4], "%Y-%m-%d").date() #Transformo todo o codigo em um tipo de dado date
+                        self.category = self.get_category_id_by_name(line.split(",")[5].strip())
+                        product = Products(name=self.name, kg_price=self.price, quantity=self.quantity, expiration_date=self.expiration_date, enter_date=self.enter_date, category_id=self.category)
+                    
+                    self.create_product(product)
+                  
 
 im = InventoryManagement(engine)  
+
 
 
 # coxinha = Products(name = 'Coxinha', kg_price = '27.50', quantity = 15, enter_date = date.today(), expiration_date=date(2025, 10, 21) , category_id= 3)

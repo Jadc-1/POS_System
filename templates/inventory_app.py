@@ -116,16 +116,21 @@ def inventory_app(parent):
 
 
     choose_category = CTkComboBox(query_frame, values = products_management.list_categories_name(), text_color="#5E5E5E", font = ("Verdana", 12, "bold"), fg_color="white", button_color="#CECECE", button_hover_color="#B7B7B7", corner_radius= 10, dropdown_fg_color="white", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 12, "bold"), border_color="#CECECE", width= 200, height=40)
-    choose_category.pack(padx = (225,0), pady=(9,5), side="left", anchor= "w")
+    choose_category.pack(padx = (150,0), pady=(9,5), side="left", anchor= "w")
     choose_category.set("Categories")
     category_search = CTkButton(query_frame, corner_radius=10, width = 20, height= 30, anchor="w", text="", fg_color="#57C590", hover_color="#49A578", image=search_image, command=search_category)
     category_search.pack_propagate(0)
     category_search.pack(pady=(9,3), padx=(3,0), side="left", anchor="center")
 
     delete_button = CTkButton(query_frame, text = "- Delete", text_color= "white", font=add_button_font, corner_radius=20, fg_color="#AA3939", hover_color="#8B2F2F",anchor= "center", command=lambda: delete_product_app(), width = 25)
-    delete_button.pack(pady = (9,7), anchor = "ne", side="right", fill="y")
+    delete_button.pack(padx=3,pady = (9,7), anchor = "ne", side="right", fill="y")
+    autocreate_button = CTkButton(query_frame, text = "+ AutoAdd", text_color= "white", font=add_button_font, corner_radius=20, fg_color=frame_bg_color, hover_color="#4CAF50",anchor= "center", command=lambda: autoadd_product(), width = 25)
+    autocreate_button.pack(padx=3,pady = (9,7), anchor = "ne", side="right", fill="y")
     create_button = CTkButton(query_frame, text = "+ Add", text_color= "white", font=add_button_font, corner_radius=20, fg_color=frame_bg_color, hover_color="#4CAF50",anchor= "center", command=lambda: add_product_app(), width = 25)
-    create_button.pack(padx=5,pady = (9,7), anchor = "ne", side="right", fill="y")
+    create_button.pack(padx=3,pady = (9,7), anchor = "ne", side="right", fill="y")
+    
+
+
 
     table_column_frame = CTkFrame(parent, width=1270, height=25, fg_color= "transparent")
     table_column_frame.pack(padx=(0,8),pady=(3,0))
@@ -149,7 +154,7 @@ def add_product_app():
     product_app = CTkToplevel()
     name_font = CTkFont("Verdana", 13, "normal")
     product_app.title("Add Product")
-    product_app.geometry("500x600+700+150")
+    product_app.geometry("500x600+750+150")
     product_app.resizable(0,0)
     product_app.config(background="#F6F6F6")
     #Depois de abrir totalmente a janela, ela será o foco, ou seja, vai sobrepor a janela
@@ -338,20 +343,39 @@ def delete_product_app():
             
     delete_tab._segmented_button.configure(height = 30, font =("Verdana", 12, "bold"))  
     
-          
-    # def close_app():
-    #     delete_button.configure(image = delete_image_white)
-    #     delete_app.after(50,delete_app.destroy)
+def autoadd_product():
+    products_management = InventoryManagement(engine)
+    autoadd_app = CTkToplevel()
+    autoadd_app.title("Add products automatic")
+    autoadd_app.geometry("500x300+750+350")
+    autoadd_app.after(100, lambda: autoadd_app.focus())
+
+    autoadd_button = CTkButton(autoadd_app, text="Choose an excel archive to regist products", command=lambda:products_management.choose_file())
+    autoadd_button.pack()
     
-    # delete_image_data_white = Image.open(r"images\close_white.png")
-    # delete_image_white = CTkImage(light_image=delete_image_data_white, dark_image=delete_image_data_white, size=(25,25))
-    # delete_image_data = Image.open(r"images\clear.png")
-    # delete_image_frame = CTkFrame(delete_app_mainframe, fg_color="white")
-    # delete_image_frame.pack(padx=(5,0), pady=(6,0))
-    # delete_image_frame.place(relx=0.89, rely=0.01)
-    # delete_image = CTkImage(light_image=delete_image_data, dark_image=delete_image_data, size=(15,15))
-    # delete_button = CTkButton(delete_image_frame, image=delete_image, text="", anchor="center", width=40, fg_color="white", hover_color="white", command=close_app)
-    # delete_button.pack(pady=(10,0))
+    created_label = CTkLabel(autoadd_app, height=30,width=250, font=("Verdana", 12, "bold"), text_color="green", text="Products Created")
+    created_label.pack_forget()
+
+
+    
+
+
+
+
+
+# def close_app():
+#     delete_button.configure(image = delete_image_white)
+#     delete_app.after(50,delete_app.destroy)
+
+# delete_image_data_white = Image.open(r"images\close_white.png")
+# delete_image_white = CTkImage(light_image=delete_image_data_white, dark_image=delete_image_data_white, size=(25,25))
+# delete_image_data = Image.open(r"images\clear.png")
+# delete_image_frame = CTkFrame(delete_app_mainframe, fg_color="white")
+# delete_image_frame.pack(padx=(5,0), pady=(6,0))
+# delete_image_frame.place(relx=0.89, rely=0.01)
+# delete_image = CTkImage(light_image=delete_image_data, dark_image=delete_image_data, size=(15,15))
+# delete_button = CTkButton(delete_image_frame, image=delete_image, text="", anchor="center", width=40, fg_color="white", hover_color="white", command=close_app)
+# delete_button.pack(pady=(10,0))
 
             
 
