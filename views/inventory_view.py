@@ -155,27 +155,36 @@ class InventoryManagement():
                 self.price = float(line.split(",")[1].strip())
                 self.quantity = int(line.split(",")[2].strip())
                 if index == 0:
-                    if "Unammed" in line.split(",")[3]:
-                        self.enter_date = datetime.strptime(line.split(",")[4], "%Y-%m-%d %H:%M:%S").date() #Transformo todo o codigo em um tipo de dado date
-                        self.category = self.get_category_id_by_name(line.split(",")[5].strip())
+                    self.enter_date = datetime.strptime(line.split(",")[4], r"%Y-%m-%d %H:%M:%S").date()
+                    self.category = self.get_category_id_by_name(line.split(",")[5].strip())
+                    if "Unnamed" in line.split(",")[3]: ##Caso expiration for vazio
                         product = Products(name=self.name, kg_price=self.price, quantity=self.quantity, expiration_date=None, enter_date=self.enter_date, category_id=self.category)
+                    else:
+                        self.expiration_date = datetime.strptime(line.split(",")[3], r"%Y-%m-%d %H:%M:%S").date()
+                        product = Products(name=self.name, kg_price=self.price, quantity=self.quantity, expiration_date=self.expiration_date, enter_date=self.enter_date, category_id=self.category)
+                    self.create_product(product)   
                 else:
                     if line.split(",")[3] == "":
-                        self.enter_date = datetime.strptime(line.split(",")[4], "%Y-%m-%d").date() #Transformo todo o codigo em um tipo de dado date
+                        try:
+                            self.enter_date = datetime.strptime(line.split(",")[4], r"%Y-%m-%d").date() #Transformo todo o codigo em um tipo de dado date
+                        except ValueError:
+                            self.enter_date = datetime.strptime(line.split(",")[4], r"%Y-%m-%d %H:%M:%S").date() 
                         self.category = self.get_category_id_by_name(line.split(",")[5].strip())
                         product = Products(name=self.name, kg_price=self.price, quantity=self.quantity, expiration_date=None, enter_date=self.enter_date, category_id=self.category)
-
+                        self.create_product(product)
                     else:
-                        self.expiration_date = datetime.strptime(line.split(",")[3], "%Y-%m-%d").date()
-                        self.enter_date = datetime.strptime(line.split(",")[4], "%Y-%m-%d").date() #Transformo todo o codigo em um tipo de dado date
+                        try:
+                            self.expiration_date = datetime.strptime(line.split(",")[3], r"%Y/%m/%d").date()
+                            self.enter_date = datetime.strptime(line.split(",")[4], r"%Y/%m/%d").date() 
+                        except ValueError:
+                            self.expiration_date = datetime.strptime(line.split(",")[3], r"%Y-%m-%d").date()
+                            self.enter_date = datetime.strptime(line.split(",")[4], r"%Y-%m-%d").date() 
                         self.category = self.get_category_id_by_name(line.split(",")[5].strip())
                         product = Products(name=self.name, kg_price=self.price, quantity=self.quantity, expiration_date=self.expiration_date, enter_date=self.enter_date, category_id=self.category)
-                    
-                    self.create_product(product)
+                        self.create_product(product)
                   
 
 im = InventoryManagement(engine)  
-
 
 
 # coxinha = Products(name = 'Coxinha', kg_price = '27.50', quantity = 15, enter_date = date.today(), expiration_date=date(2025, 10, 21) , category_id= 3)

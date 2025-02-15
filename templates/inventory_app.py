@@ -240,8 +240,8 @@ def add_product_app():
     add_frame = CTkFrame(product_app_frame, height=45, width=190, fg_color="white", corner_radius=15)
     add_frame.pack(side="bottom", pady=(0,45))
     add_frame.pack_propagate(0)
-    add_label = CTkButton(add_frame, text="Add", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#57C590", hover_color="#4FB483", command=lambda: product_add())
-    add_label.pack(expand=True, fill="both")
+    add_button = CTkButton(add_frame, text="Add", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#57C590", hover_color="#4FB483", command=lambda: product_add())
+    add_button.pack(expand=True, fill="both")
 
 
 
@@ -281,7 +281,7 @@ def delete_product_app():
     delete_app_mainframe.pack(fill="both", expand=True)
     delete_app_mainframe.pack_propagate(0)
 
-    delete_tab = CTkTabview(delete_app_mainframe, fg_color="white", segmented_button_selected_color="#66C39B", segmented_button_selected_hover_color="#82DEB8", segmented_button_unselected_hover_color="#4E4E4E", text_color="#FFFFFF", anchor="nw")  
+    delete_tab = CTkTabview(delete_app_mainframe, fg_color="white", segmented_button_selected_color="red", segmented_button_selected_hover_color="#8B2F2F", segmented_button_unselected_hover_color="#8B2F2F", text_color="#FFFFFF", anchor="nw")  
     delete_tab.pack(fill="both", expand=True, padx= 3, pady=3)
     delete_tab.pack_propagate(0)
 
@@ -349,13 +349,24 @@ def autoadd_product():
     autoadd_app.title("Add products automatic")
     autoadd_app.geometry("500x300+750+350")
     autoadd_app.after(100, lambda: autoadd_app.focus())
+    autoadd_app.pack_propagate(0)
 
-    autoadd_button = CTkButton(autoadd_app, text="Choose an excel archive to regist products", command=lambda:products_management.choose_file())
-    autoadd_button.pack()
+    autoadd_frame = CTkFrame(autoadd_app, fg_color = "white")
+    autoadd_frame.pack(fill="both", expand= True)
     
-    created_label = CTkLabel(autoadd_app, height=30,width=250, font=("Verdana", 12, "bold"), text_color="green", text="Products Created")
+    autoadd_label = CTkLabel(autoadd_frame, text="Upload an Excel file to register products...", text_color="#5E5E5E", font=("Arial", 20, "bold"), anchor="center")
+    autoadd_label.pack(pady=(100,0))
+    autoadd_button = CTkButton(autoadd_frame, text="Submit", fg_color="#57C590", hover_color="#49A578", font=("Verdana", 15, "bold"), text_color="white",height=35, width=150, command=lambda:products_management.choose_file())
+    autoadd_button.pack(anchor="center", pady= (20,0))
+    
+    created_label = CTkLabel(autoadd_frame, height=30,width=250, font=("Verdana", 12, "bold"), text_color="green", text="Products Created")
     created_label.pack_forget()
 
+    question_data = Image.open(r"images\question.png")
+    question_image = CTkImage(light_image=question_data, dark_image=question_data, size=(18,18))    
+    question_button = CTkButton(autoadd_frame, width = 18, height=18, corner_radius=4, anchor="w", text="", fg_color="#57C590", hover_color="#49A578", image=question_image)
+    question_button.pack_propagate(0)
+    question_button.pack(pady=10, padx=10, side="bottom", anchor="se")
 
     
 
