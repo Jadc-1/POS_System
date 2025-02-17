@@ -15,7 +15,9 @@ from views.inventory_view import InventoryManagement
 
 def mainApp():
     app = CTk()
-    app.geometry(f"{app.winfo_screenwidth()}x{app.winfo_screenheight()}+0+0") ##Pega a informação da largura e altura da tela e passa para o geometry
+    width = app.winfo_screenwidth()
+    height = app.winfo_screenheight()
+    app.geometry(f"{width}x{height}+-7+0") ##Pega a informação da largura e altura da tela e passa para o geometry
     app.title("UniFruti")
     app.iconbitmap(r"images\logo_2.ico")
 

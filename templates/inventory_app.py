@@ -7,9 +7,9 @@ from views.inventory_view import InventoryManagement
 from models.database import engine
 from CTkTable import CTkTable
 from datetime import date,datetime
-from tkcalendar import Calendar,DateEntry
-from tkinter import PhotoImage, Toplevel
-import logging
+from tkcalendar import Calendar
+from CTkMessagebox import CTkMessagebox
+
 
 global date_choosed
 date_choosed = None
@@ -172,33 +172,41 @@ def add_product_app():
     
 
     name_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
-    name_frame.pack(anchor = "center", fill="x", pady=(30,0))
+    name_frame.pack(anchor = "center", fill="x", pady=(40,0))
     product_name = CTkLabel(name_frame, text="Name*", font=("Verdana", 14, "normal"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
     product_name.pack(padx=(30,0), fill="x", anchor="nw")
     name_input = CTkEntry(name_frame, placeholder_text="Enter product name", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
-    name_input.pack(pady=(1,10), padx=(30,0), anchor="w", side="bottom")
+    name_input.pack(pady=(1), padx=(30,0), anchor="w", side="bottom")
 
 
     unit_price_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
-    unit_price_frame.pack(anchor = "center", fill="x", pady=(15,0))
+    unit_price_frame.pack(anchor = "center", fill="x", pady=(25,0))
     unit_price = CTkLabel(unit_price_frame, text="Unit Price*", font=name_font, text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
     unit_price.pack(padx=(30,0), fill="x", anchor="nw")
-    unit_price_input = CTkEntry(unit_price_frame, placeholder_text="Enter unit price", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
-    unit_price_input.pack(pady=(1,10), padx=(30,0), anchor="w", side="bottom")
+    unit_price_intern_frame = CTkFrame(unit_price_frame, fg_color="white")
+    unit_price_intern_frame.pack(fill="x")
+    unit_price_input = CTkEntry(unit_price_intern_frame, placeholder_text="Enter unit price", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
+    unit_price_input.pack(pady=(1), padx=(30,0), anchor="w", side="top")
+    unit_price_error = CTkLabel(unit_price_intern_frame, text_color="red", height=25)
 
     quantity_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
-    quantity_frame.pack(anchor = "center", fill="x", pady=(15,0))
+    quantity_frame.pack(anchor = "center", fill="x", pady=(25,0))
     quantity = CTkLabel(quantity_frame, text="Quantity*", font=name_font, text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
     quantity.pack(padx=(30,0), fill="x", anchor="nw")
-    quantity_input = CTkEntry(quantity_frame, placeholder_text="Enter quantity", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
-    quantity_input.pack(pady=(1,10), padx=(30,0), anchor="w", side="bottom")
+    quantity_intern_frame = CTkFrame(quantity_frame, fg_color="white")
+    quantity_intern_frame.pack(fill="x")
+    quantity_input = CTkEntry(quantity_intern_frame, placeholder_text="Enter quantity", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
+    quantity_input.pack(pady=(1), padx=(30,0), anchor="w", side="top")
+    #So chama esse quando dar algum erro!
+    quantity_error = CTkLabel(quantity_intern_frame, text_color="red", height=25)
+
 
     category_frame = CTkFrame(product_app_frame, height=50,width=150, fg_color="white")
     category_frame.pack(anchor="w", padx = (30,0), pady=(25,10))
     category = CTkLabel(category_frame, text="Category*(write or choose)", font=name_font, text_color= "#5E5E5E", anchor="nw", fg_color="white", width= 70, height= 20)
     category.pack(anchor="nw")
-    category_option = CTkComboBox(category_frame, values = products_management.list_categories_name(), text_color="#5E5E5E", font = ("Verdana", 13, "bold"), height=32, width= 200, fg_color="#DEDEDE", button_color="#DEDEDE", button_hover_color="#BCBCBC", corner_radius= 10, dropdown_fg_color="#DEDEDE", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 13, "bold"), border_width=0)
-    category_option.pack(pady=(5,10))
+    category_option = CTkComboBox(category_frame, values = products_management.list_categories_name(), text_color="#5E5E5E", font = ("Verdana", 13, "bold"), height=34, width= 200, fg_color="#DEDEDE", button_color="#DEDEDE", button_hover_color="#BCBCBC", corner_radius= 10, dropdown_fg_color="#DEDEDE", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 13, "bold"), border_width=0)
+    category_option.pack(pady=(1,10))
 
     calendar_image_data = Image.open(r"images\calendar_1.png")
     calendar_image = CTkImage(light_image=calendar_image_data, dark_image=calendar_image_data)
@@ -248,8 +256,39 @@ def add_product_app():
     def product_add():
         global date_choosed
         name_value = name_input.get()
-        unit_price_value = unit_price_input.get()
-        quantity_value = quantity_input.get()
+
+        #Tratando o que o usuario digitar em Unit Price e Quantity, para só aceitar números e evitar campos vazios
+        try:
+            unit_price_value = float(unit_price_input.get())
+            print(unit_price_value)
+        except ValueError:
+            unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
+            unit_price_error.pack(side="bottom", anchor="w", padx=(30,0))
+            unit_price_error.pack_propagate(0)
+            unit_price_error.after(4000, lambda: unit_price_error.destroy())
+        except UnboundLocalError:
+            unit_price_value = 0
+            unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
+            unit_price_error.pack(side="bottom", anchor="w", padx=(30,0))
+            unit_price_error.pack_propagate(0)
+            unit_price_error.after(4000, lambda: unit_price_error.destroy())
+
+
+
+        try:
+            quantity_value = int(quantity_input.get())
+        except ValueError:
+            quantity_error.configure(text="Invalid input: The quantity must be a numeric value.")
+            quantity_error.pack(side="bottom", anchor="w", padx=(30,0))
+            quantity_error.pack_propagate(0)
+            quantity_error.after(4000, lambda: quantity_error.destroy())
+        except UnboundLocalError:
+            quantity_value = 0
+            quantity_error.configure(text="Invalid input: The unit price must be a numeric value.")
+            quantity_error.pack(side="bottom", anchor="w", padx=(30,0))
+            quantity_error.pack_propagate(0)
+            quantity_error.after(4000, lambda: quantity_error.destroy())
+        
         category_value = category_option.get()
         if date_choosed:
             expiration_date = datetime.strptime(date_choosed, "%d/%m/%Y")

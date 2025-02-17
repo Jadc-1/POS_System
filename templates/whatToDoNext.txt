@@ -1,1 +1,1 @@
-1 - Consertar o erro no looping para criar produto, com o expiration date nulo
+1 - Desenvolver o html de como utilizar o arquivo excel para adicionar produtos
