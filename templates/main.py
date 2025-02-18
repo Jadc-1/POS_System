@@ -83,8 +83,7 @@ def mainApp():
     sidebar_pos = CTkButton(master=sidebar_frame, text = "POS System", text_color="#FFFFFF", fg_color="#4CAF50", corner_radius=15, height=40, width=400, font=text_font, hover_color="#007900", command=lambda: button_onclick(sidebar_pos, content), image = pos_image, anchor="w")
     sidebar_pos.pack(pady=10, padx=30, anchor="center") 
 
-
-
     app.mainloop()
+
 
 mainApp()

@@ -132,7 +132,7 @@ def inventory_app(parent):
 
 
 
-    table_column_frame = CTkFrame(parent, width=1270, height=25, fg_color= "transparent")
+    table_column_frame = CTkFrame(parent, width=1269, height=25, fg_color= "transparent")
     table_column_frame.pack(padx=(0,8),pady=(3,0))
     table_column_frame.pack_propagate(0)
     table_frame = CTkScrollableFrame(parent, width= 1270, height = 500, fg_color= "transparent", scrollbar_button_color=frame_bg_color,)
@@ -149,263 +149,268 @@ def inventory_app(parent):
     table.pack(fill = "both",expand = True, pady=0)
 
 
-def add_product_app():
-    products_management = InventoryManagement(engine)
-    product_app = CTkToplevel()
-    name_font = CTkFont("Verdana", 13, "normal")
-    product_app.title("Add Product")
-    product_app.geometry("500x600+750+150")
-    product_app.resizable(0,0)
-    product_app.config(background="#F6F6F6")
-    #Depois de abrir totalmente a janela, ela será o foco, ou seja, vai sobrepor a janela
-    product_app.after(100, lambda: product_app.focus())
-    
-    
-    product_app_frame = CTkFrame(product_app, fg_color="white")
-    product_app_frame.pack(fill = "both", expand = True)
-
-    main_title_frame = CTkFrame(product_app_frame, height=60, width=60, fg_color="white")
-    main_title_frame.pack(anchor="center", fill= "x")
-
-    main_title = CTkLabel(main_title_frame, height= 30, width= 30, text = "Add new product", text_color="#5E5E5E", font=("Arial", 20, "bold"))
-    main_title.pack(padx= 10, pady= (30,10))
-    
-
-    name_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
-    name_frame.pack(anchor = "center", fill="x", pady=(40,0))
-    product_name = CTkLabel(name_frame, text="Name*", font=("Verdana", 14, "normal"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
-    product_name.pack(padx=(30,0), fill="x", anchor="nw")
-    name_input = CTkEntry(name_frame, placeholder_text="Enter product name", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
-    name_input.pack(pady=(1), padx=(30,0), anchor="w", side="bottom")
-
-
-    unit_price_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
-    unit_price_frame.pack(anchor = "center", fill="x", pady=(25,0))
-    unit_price = CTkLabel(unit_price_frame, text="Unit Price*", font=name_font, text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
-    unit_price.pack(padx=(30,0), fill="x", anchor="nw")
-    unit_price_intern_frame = CTkFrame(unit_price_frame, fg_color="white")
-    unit_price_intern_frame.pack(fill="x")
-    unit_price_input = CTkEntry(unit_price_intern_frame, placeholder_text="Enter unit price", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
-    unit_price_input.pack(pady=(1), padx=(30,0), anchor="w", side="top")
-    unit_price_error = CTkLabel(unit_price_intern_frame, text_color="red", height=25)
-
-    quantity_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
-    quantity_frame.pack(anchor = "center", fill="x", pady=(25,0))
-    quantity = CTkLabel(quantity_frame, text="Quantity*", font=name_font, text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
-    quantity.pack(padx=(30,0), fill="x", anchor="nw")
-    quantity_intern_frame = CTkFrame(quantity_frame, fg_color="white")
-    quantity_intern_frame.pack(fill="x")
-    quantity_input = CTkEntry(quantity_intern_frame, placeholder_text="Enter quantity", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
-    quantity_input.pack(pady=(1), padx=(30,0), anchor="w", side="top")
-    #So chama esse quando dar algum erro!
-    quantity_error = CTkLabel(quantity_intern_frame, text_color="red", height=25)
-
-
-    category_frame = CTkFrame(product_app_frame, height=50,width=150, fg_color="white")
-    category_frame.pack(anchor="w", padx = (30,0), pady=(25,10))
-    category = CTkLabel(category_frame, text="Category*(write or choose)", font=name_font, text_color= "#5E5E5E", anchor="nw", fg_color="white", width= 70, height= 20)
-    category.pack(anchor="nw")
-    category_option = CTkComboBox(category_frame, values = products_management.list_categories_name(), text_color="#5E5E5E", font = ("Verdana", 13, "bold"), height=34, width= 200, fg_color="#DEDEDE", button_color="#DEDEDE", button_hover_color="#BCBCBC", corner_radius= 10, dropdown_fg_color="#DEDEDE", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 13, "bold"), border_width=0)
-    category_option.pack(pady=(1,10))
-
-    calendar_image_data = Image.open(r"images\calendar_1.png")
-    calendar_image = CTkImage(light_image=calendar_image_data, dark_image=calendar_image_data)
-    expiration_date_frame = CTkFrame(product_app_frame, height=60, width=180, fg_color="white")
-    expiration_date_frame.place(relx = 0.93, rely=0.62, anchor="ne")
-    expiration_date = CTkLabel(expiration_date_frame, text="Expiration date(optional)", font=name_font, text_color= "#5E5E5E", anchor="nw", fg_color="white", width= 70, height= 20)
-    expiration_date.pack(anchor="ne")
-
-    def create_calendar():
-        calendar_screen = CTkToplevel()
-        calendar_screen.geometry("250x200+1035+607")
-        calendar_screen.overrideredirect(True)
-        calendar_screen.resizable(0,0)
-        calendar = Calendar(calendar_screen, mindate=date.today(), showweeknumbers=False, showothermonthdays=False, showcurrent=True, date_pattern="dd/mm/yyyy", locale="en_US", background="#56C46A", headersbackground="#53BC89", headersforeground="white", weekendbackground = "white", weekendforeground="black", selectbackground="#56C46A", selectforeground="white", font=("Arial black", 10,"normal"))
-        calendar.pack(expand=True, fill="both")
-        #lambda necessário, pois after precisa de uma função para rodar apos 100 ms
-        calendar_screen.grab_set()
-        calendar_screen.after(100, lambda: product_app.focus())
-        
-
-        def date_updated(event):
-            global date_choosed
-            date_choosed = calendar.get_date()
-            calendar_label.configure(text=date_choosed)
-            calendar_screen.after(100, lambda:calendar_screen.destroy())
-            #o método bind automaticamente passa um objeto de evento como argumento para a função date_updated quando o evento ocorre
-        calendar.bind("<<CalendarSelected>>", date_updated)
-    
-
+    def add_product_app():
+        products_management = InventoryManagement(engine)
+        product_app = CTkToplevel()
+        name_font = CTkFont("Verdana", 13, "normal")
+        product_app.title("Add Product")
+        product_app.geometry("500x600+750+150")
+        product_app.resizable(0,0)
+        product_app.config(background="#F6F6F6")
+        #Depois de abrir totalmente a janela, ela será o foco, ou seja, vai sobrepor a janela
+        product_app.after(100, lambda: product_app.focus())
         
         
-    calendar_frame = CTkFrame(expiration_date_frame, height=32, width= 165, fg_color="#DEDEDE", border_width=2, border_color="#57C590")
-    calendar_frame.pack(anchor="e")
-    calendar_label = CTkLabel(calendar_frame, height=32, width= 165, fg_color="#DEDEDE", text="", corner_radius=10, anchor="e", font=("Verdana", 11.5, "normal"), text_color="#5E5E5E")
-    calendar_label.pack(side="left", fill="x")
-    calendar_button = CTkButton(calendar_frame, height=32, width=35, text="", corner_radius=0, border_width=1, fg_color="#DEDEDE" , border_color= "#57C590", hover_color="#BCBCBC", anchor="center", image=calendar_image, command=lambda:create_calendar())
-    calendar_button.pack(anchor="ne", side="left")
-    
-    add_frame = CTkFrame(product_app_frame, height=45, width=190, fg_color="white", corner_radius=15)
-    add_frame.pack(side="bottom", pady=(0,45))
-    add_frame.pack_propagate(0)
-    add_button = CTkButton(add_frame, text="Add", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#57C590", hover_color="#4FB483", command=lambda: product_add())
-    add_button.pack(expand=True, fill="both")
+        product_app_frame = CTkFrame(product_app, fg_color="white")
+        product_app_frame.pack(fill = "both", expand = True)
 
+        main_title_frame = CTkFrame(product_app_frame, height=60, width=60, fg_color="white")
+        main_title_frame.pack(anchor="center", fill= "x")
 
-
-    def product_add():
-        global date_choosed
-        name_value = name_input.get()
-
-        #Tratando o que o usuario digitar em Unit Price e Quantity, para só aceitar números e evitar campos vazios
-        try:
-            unit_price_value = float(unit_price_input.get())
-            print(unit_price_value)
-        except ValueError:
-            unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
-            unit_price_error.pack(side="bottom", anchor="w", padx=(30,0))
-            unit_price_error.pack_propagate(0)
-            unit_price_error.after(4000, lambda: unit_price_error.destroy())
-        except UnboundLocalError:
-            unit_price_value = 0
-            unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
-            unit_price_error.pack(side="bottom", anchor="w", padx=(30,0))
-            unit_price_error.pack_propagate(0)
-            unit_price_error.after(4000, lambda: unit_price_error.destroy())
-
-
-
-        try:
-            quantity_value = int(quantity_input.get())
-        except ValueError:
-            quantity_error.configure(text="Invalid input: The quantity must be a numeric value.")
-            quantity_error.pack(side="bottom", anchor="w", padx=(30,0))
-            quantity_error.pack_propagate(0)
-            quantity_error.after(4000, lambda: quantity_error.destroy())
-        except UnboundLocalError:
-            quantity_value = 0
-            quantity_error.configure(text="Invalid input: The unit price must be a numeric value.")
-            quantity_error.pack(side="bottom", anchor="w", padx=(30,0))
-            quantity_error.pack_propagate(0)
-            quantity_error.after(4000, lambda: quantity_error.destroy())
+        main_title = CTkLabel(main_title_frame, height= 30, width= 30, text = "Add new product", text_color="#5E5E5E", font=("Arial", 20, "bold"))
+        main_title.pack(padx= 10, pady= (30,10))
         
-        category_value = category_option.get()
-        if date_choosed:
-            expiration_date = datetime.strptime(date_choosed, "%d/%m/%Y")
-        else:
-            expiration_date = None
-        category_id = products_management.get_category_id_by_name(category_value)
 
-        product = Products(name=name_value, kg_price=unit_price_value, quantity=quantity_value, enter_date= date.today() ,expiration_date = expiration_date, category_id= category_id)
-        products_management.create_product(product)
-        product_app_frame.after(300,product_app.destroy())
-
-
-            #confirm_frame = CTkFrame(product_app, fg_color="#57C590")
-            # confirm_frame.pack(anchor="center", fill="both", expand=True)
-            # confirm_frame.pack_propagate(0)
-            # confirm = CTkLabel(confirm_frame, text="Product Created!", fg_color="#57C590", font=("Verdana", 25, "bold"), text_color="white", anchor="center")
-            # confirm.pack()
-            # confirm.place(rely=0.45, relx=0.25)
-
-def delete_product_app(): 
-    products_management = InventoryManagement(engine)
-    delete_app = CTkToplevel()
-    delete_app.title("Delete products")
-    delete_app.geometry("500x300+750+350")
-    delete_app.after(100, lambda: delete_app.focus())
-   
-
-    delete_app_mainframe = CTkFrame(delete_app, fg_color="white")
-    delete_app_mainframe.pack(fill="both", expand=True)
-    delete_app_mainframe.pack_propagate(0)
-
-    delete_tab = CTkTabview(delete_app_mainframe, fg_color="white", segmented_button_selected_color="red", segmented_button_selected_hover_color="#8B2F2F", segmented_button_unselected_hover_color="#8B2F2F", text_color="#FFFFFF", anchor="nw")  
-    delete_tab.pack(fill="both", expand=True, padx= 3, pady=3)
-    delete_tab.pack_propagate(0)
+        name_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
+        name_frame.pack(anchor = "center", fill="x", pady=(40,0))
+        product_name = CTkLabel(name_frame, text="Name*", font=("Verdana", 14, "normal"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
+        product_name.pack(padx=(30,0), fill="x", anchor="nw")
+        name_intern_frame = CTkFrame(name_frame, fg_color="white")
+        name_intern_frame.pack(fill="x")
+        name_input = CTkEntry(name_intern_frame, placeholder_text="Enter product name", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
+        name_input.pack(pady=(1), padx=(30,0), anchor="w", side="top")
+        name_error = CTkLabel(name_intern_frame, text_color="red", height=25)
 
 
-    #Tag do produto ====================
+        unit_price_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
+        unit_price_frame.pack(anchor = "center", fill="x", pady=(25,0))
+        unit_price = CTkLabel(unit_price_frame, text="Unit Price*", font=name_font, text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
+        unit_price.pack(padx=(30,0), fill="x", anchor="nw")
+        unit_price_intern_frame = CTkFrame(unit_price_frame, fg_color="white")
+        unit_price_intern_frame.pack(fill="x")
+        unit_price_input = CTkEntry(unit_price_intern_frame, placeholder_text="Enter unit price", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
+        unit_price_input.pack(pady=(1), padx=(30,0), anchor="w", side="top")
+        unit_price_error = CTkLabel(unit_price_intern_frame, text_color="red", height=25)
 
-    products_tab = delete_tab.add("    Products    ")
-
-    delete_product_frame = CTkFrame(products_tab, fg_color="white")
-    delete_product_frame.pack_propagate(0)
-    delete_product_frame.pack(fill = "both", expand = True)
-
-    name_frame = CTkFrame(delete_product_frame, height=50,width=60, fg_color="white")
-    name_frame.pack(anchor = "center", fill="x", pady=(30,0))
-    product_name = CTkLabel(name_frame, text="Name", font=("Verdana", 16, "bold"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
-    product_name.pack(padx=(15,0), pady=(0,3), fill="x", anchor="nw")
-    name_input = CTkEntry(name_frame, placeholder_text="Enter product name to delete", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
-    name_input.pack(pady=(1,10), padx=(15,0), anchor="w", side="bottom")
-
-    def get_product_to_delete():
-        delete_input = name_input.get()
-        products_management.delete_product(delete_input)
-        delete_app.after(100, delete_app.destroy())
-        return delete_input
-
-    delete_frame = CTkFrame(delete_product_frame, height=45, width=190, fg_color="white", corner_radius=15)
-    delete_frame.pack(side="bottom", pady=(0,45))
-    delete_frame.pack_propagate(0)
-    product_button = CTkButton(delete_frame, text="Delete", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#AA3939", hover_color="#8B2F2F", command=lambda: get_product_to_delete())
-    product_button.pack(expand=True, fill="both")
-
-    #Tab da categoria ==============
-
-    categories_tab = delete_tab.add("    Categories    ")
-
-    delete_category_frame = CTkFrame(categories_tab, fg_color="white")
-    delete_category_frame.pack_propagate(0)
-    delete_category_frame.pack(fill = "both", expand = True)
+        quantity_frame = CTkFrame(product_app_frame, height=50,width=60, fg_color="white")
+        quantity_frame.pack(anchor = "center", fill="x", pady=(25,0))
+        quantity = CTkLabel(quantity_frame, text="Quantity*", font=name_font, text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
+        quantity.pack(padx=(30,0), fill="x", anchor="nw")
+        quantity_intern_frame = CTkFrame(quantity_frame, fg_color="white")
+        quantity_intern_frame.pack(fill="x")
+        quantity_input = CTkEntry(quantity_intern_frame, placeholder_text="Enter quantity", height=40, width= 435, corner_radius=0, border_color= "#57C590", border_width=1)
+        quantity_input.pack(pady=(1), padx=(30,0), anchor="w", side="top")
+        #So chama esse quando dar algum erro!
+        quantity_error = CTkLabel(quantity_intern_frame, text_color="red", height=25)
 
 
-    category_frame = CTkFrame(delete_category_frame, height=50,width=60, fg_color="white")
-    category_frame.pack(anchor = "center", fill="x", pady=(30,0))
-    category_name = CTkLabel(category_frame, text="Category", font=("Verdana", 16, "bold"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
-    category_name.pack(padx=(15,0), pady=(0,3), fill="x", anchor="nw")
-    category_input = CTkEntry(category_frame, placeholder_text="Enter category name to delete", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
-    category_input.pack(pady=(1,10), padx=(15,0), anchor="w", side="bottom")
+        options_frame = CTkFrame(product_app_frame, fg_color="white")
+        options_frame.pack(fill="x")
 
-    def get_category_to_delete():
-        delete_input = category_input.get()
-        products_management.delete_category(delete_input)
-        delete_app.after(100, delete_app.destroy())
-        return delete_input
+        category_frame = CTkFrame(options_frame, height=50,width=150, fg_color="white")
+        category_frame.pack(anchor="w", padx = (30,0), pady=(25,10), side="left")
+        category = CTkLabel(category_frame, text="Category*(write or choose)", font=name_font, text_color= "#5E5E5E", anchor="nw", fg_color="white", width= 70, height= 20)
+        category.pack(anchor="nw")
+        category_option = CTkComboBox(category_frame, values = products_management.list_categories_name(), text_color="#5E5E5E", font = ("Verdana", 13, "bold"), height=34, width= 200, fg_color="#DEDEDE", button_color="#DEDEDE", button_hover_color="#BCBCBC", corner_radius= 10, dropdown_fg_color="#DEDEDE", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 13, "bold"), border_width=0)
+        category_option.pack(pady=(1,10))
 
-    delete_category = CTkFrame(delete_category_frame, height=45, width=190, fg_color="white", corner_radius=15)
-    delete_category.pack(side="bottom", pady=(0,45))
-    delete_category.pack_propagate(0)
-    category_button = CTkButton(delete_category, text="Delete", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#AA3939", hover_color="#8B2F2F", command=lambda: get_category_to_delete())
-    category_button.pack(expand=True, fill="both")
+        calendar_image_data = Image.open(r"images\calendar_1.png")
+        calendar_image = CTkImage(light_image=calendar_image_data, dark_image=calendar_image_data)
+        expiration_date_frame = CTkFrame(options_frame, height=60, width=180, fg_color="white")
+        expiration_date_frame.pack(side="right", padx=(0,35), pady=(6,0))
+        expiration_date = CTkLabel(expiration_date_frame, text="Expiration date(optional)", font=name_font, text_color= "#5E5E5E", anchor="nw", fg_color="white", width= 70, height= 20)
+        expiration_date.pack(anchor="ne")
+
+        def create_calendar():
+            calendar_screen = CTkToplevel()
+            calendar_screen.geometry("250x200+1035+607")
+            calendar_screen.overrideredirect(True)
+            calendar_screen.resizable(0,0)
+            calendar = Calendar(calendar_screen, mindate=date.today(), showweeknumbers=False, showothermonthdays=False, showcurrent=True, date_pattern="dd/mm/yyyy", locale="en_US", background="#56C46A", headersbackground="#53BC89", headersforeground="white", weekendbackground = "white", weekendforeground="black", selectbackground="#56C46A", selectforeground="white", font=("Arial black", 10,"normal"))
+            calendar.pack(expand=True, fill="both")
+            #lambda necessário, pois after precisa de uma função para rodar apos 100 ms
+            calendar_screen.grab_set()
+            calendar_screen.after(100, lambda: product_app.focus())
             
-    delete_tab._segmented_button.configure(height = 30, font =("Verdana", 12, "bold"))  
-    
-def autoadd_product():
-    products_management = InventoryManagement(engine)
-    autoadd_app = CTkToplevel()
-    autoadd_app.title("Add products automatic")
-    autoadd_app.geometry("500x300+750+350")
-    autoadd_app.after(100, lambda: autoadd_app.focus())
-    autoadd_app.pack_propagate(0)
 
-    autoadd_frame = CTkFrame(autoadd_app, fg_color = "white")
-    autoadd_frame.pack(fill="both", expand= True)
-    
-    autoadd_label = CTkLabel(autoadd_frame, text="Upload an Excel file to register products...", text_color="#5E5E5E", font=("Arial", 20, "bold"), anchor="center")
-    autoadd_label.pack(pady=(100,0))
-    autoadd_button = CTkButton(autoadd_frame, text="Submit", fg_color="#57C590", hover_color="#49A578", font=("Verdana", 15, "bold"), text_color="white",height=35, width=150, command=lambda:products_management.choose_file())
-    autoadd_button.pack(anchor="center", pady= (20,0))
-    
-    created_label = CTkLabel(autoadd_frame, height=30,width=250, font=("Verdana", 12, "bold"), text_color="green", text="Products Created")
-    created_label.pack_forget()
+            def date_updated(event):
+                global date_choosed
+                date_choosed = calendar.get_date()
+                calendar_label.configure(text=date_choosed)
+                calendar_screen.after(100, lambda:calendar_screen.destroy())
+                #o método bind automaticamente passa um objeto de evento como argumento para a função date_updated quando o evento ocorre
+            calendar.bind("<<CalendarSelected>>", date_updated)
+        
 
-    question_data = Image.open(r"images\question.png")
-    question_image = CTkImage(light_image=question_data, dark_image=question_data, size=(18,18))    
-    question_button = CTkButton(autoadd_frame, width = 18, height=18, corner_radius=4, anchor="w", text="", fg_color="#57C590", hover_color="#49A578", image=question_image)
-    question_button.pack_propagate(0)
-    question_button.pack(pady=10, padx=10, side="bottom", anchor="se")
+            
+            
+        calendar_frame = CTkFrame(expiration_date_frame, height=32, width= 165, fg_color="#DEDEDE", border_width=2, border_color="#57C590")
+        calendar_frame.pack(anchor="e")
+        calendar_label = CTkLabel(calendar_frame, height=32, width= 165, fg_color="#DEDEDE", text="", corner_radius=10, anchor="e", font=("Verdana", 11.5, "normal"), text_color="#5E5E5E")
+        calendar_label.pack(side="left", fill="x")
+        calendar_button = CTkButton(calendar_frame, height=32, width=35, text="", corner_radius=0, border_width=1, fg_color="#DEDEDE" , border_color= "#57C590", hover_color="#BCBCBC", anchor="center", image=calendar_image, command=lambda:create_calendar())
+        calendar_button.pack(anchor="ne", side="left")
+        
+        add_frame = CTkFrame(product_app_frame, height=45, width=190, fg_color="white", corner_radius=15)
+        add_frame.pack(side="bottom", pady=(0,45))
+        add_frame.pack_propagate(0)
+        add_button = CTkButton(add_frame, text="Add", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#57C590", hover_color="#4FB483", command=lambda: product_add())
+        add_button.pack(expand=True, fill="both")
+
+
+
+        def product_add():
+            global date_choosed
+            name_value = ""
+            name_value = name_input.get().strip()
+            if name_value == "":
+                name_error.configure(text="Name entry can not be empty!")
+                name_error.pack(side="bottom", anchor="w", padx=(30,0))
+                name_error.pack_propagate(0)
+                name_error.after(4000, lambda: name_error.pack_forget())
+                return
+            else:
+                name_error.pack_forget()
+            #Tratando o que o usuario digitar em Unit Price e Quantity, para só aceitar números e evitar campos vazios
+            try:
+                unit_price_value = float(unit_price_input.get().strip())
+            except ValueError:
+                unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
+                unit_price_error.pack(side="bottom", anchor="w", padx=(30,0))
+                unit_price_error.pack_propagate(0)
+                unit_price_error.after(4000, lambda: unit_price_error.pack_forget())
+
+            try:
+                quantity_value = int(quantity_input.get().strip())
+            except ValueError:
+                quantity_error.configure(text="Invalid input: The quantity must be a numeric value.")
+                quantity_error.pack(side="bottom", anchor="w", padx=(30,0))
+                quantity_error.pack_propagate(0)
+                quantity_error.after(4000, lambda: quantity_error.pack_forget())
+            
+            category_value = category_option.get().strip()
+            if date_choosed:
+                expiration_date = datetime.strptime(date_choosed, "%d/%m/%Y")
+            else:
+                expiration_date = None
+            category_id = products_management.get_category_id_by_name(category_value)
+
+            try:
+                product = Products(name=name_value, kg_price=unit_price_value, quantity=quantity_value, enter_date= date.today() ,expiration_date = expiration_date, category_id= category_id)
+                products_management.create_product(product)
+                confirm_message = CTkMessagebox(master = product_app, message=f"{name_value} created!", icon="check", bg_color="#4FB483", fg_color="white", button_color= "#57C590",option_1="Close", title = "", button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                if confirm_message.get() =="Close":
+                    product_app_frame.after(300,product_app.destroy())
+            except UnboundLocalError:
+                unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
+
+
+
+                #confirm_frame = CTkFrame(product_app, fg_color="#57C590")
+                # confirm_frame.pack(anchor="center", fill="both", expand=True)
+                # confirm_frame.pack_propagate(0)
+                # confirm = CTkLabel(confirm_frame, text="Product Created!", fg_color="#57C590", font=("Verdana", 25, "bold"), text_color="white", anchor="center")
+                # confirm.pack()
+                # confirm.place(rely=0.45, relx=0.25)
+
+    def delete_product_app(): 
+        products_management = InventoryManagement(engine)
+        delete_app = CTkToplevel()
+        delete_app.title("Delete products")
+        delete_app.geometry("500x300+750+350")
+        delete_app.after(100, lambda: delete_app.focus())
+    
+
+        delete_app_mainframe = CTkFrame(delete_app, fg_color="white")
+        delete_app_mainframe.pack(fill="both", expand=True)
+        delete_app_mainframe.pack_propagate(0)
+
+        delete_tab = CTkTabview(delete_app_mainframe, fg_color="white", segmented_button_selected_color="red", segmented_button_selected_hover_color="#8B2F2F", segmented_button_unselected_hover_color="#8B2F2F", text_color="#FFFFFF", anchor="nw")  
+        delete_tab.pack(fill="both", expand=True, padx= 3, pady=3)
+        delete_tab.pack_propagate(0)
+
+
+        #Tag do produto ====================
+
+        products_tab = delete_tab.add("    Products    ")
+
+        delete_product_frame = CTkFrame(products_tab, fg_color="white")
+        delete_product_frame.pack_propagate(0)
+        delete_product_frame.pack(fill = "both", expand = True)
+
+        name_frame = CTkFrame(delete_product_frame, height=50,width=60, fg_color="white")
+        name_frame.pack(anchor = "center", fill="x", pady=(30,0))
+        product_name = CTkLabel(name_frame, text="Name", font=("Verdana", 16, "bold"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
+        product_name.pack(padx=(15,0), pady=(0,3), fill="x", anchor="nw")
+        name_input = CTkEntry(name_frame, placeholder_text="Enter product name to delete", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
+        name_input.pack(pady=(1,10), padx=(15,0), anchor="w", side="bottom")
+
+        def get_product_to_delete():
+            delete_input = name_input.get()
+            products_management.delete_product(delete_input)
+            delete_app.after(100, delete_app.destroy())
+            return delete_input
+
+        delete_frame = CTkFrame(delete_product_frame, height=45, width=190, fg_color="white", corner_radius=15)
+        delete_frame.pack(side="bottom", pady=(0,45))
+        delete_frame.pack_propagate(0)
+        product_button = CTkButton(delete_frame, text="Delete", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#AA3939", hover_color="#8B2F2F", command=lambda: get_product_to_delete())
+        product_button.pack(expand=True, fill="both")
+
+        #Tab da categoria ==============
+
+        categories_tab = delete_tab.add("    Categories    ")
+
+        delete_category_frame = CTkFrame(categories_tab, fg_color="white")
+        delete_category_frame.pack_propagate(0)
+        delete_category_frame.pack(fill = "both", expand = True)
+
+
+        category_frame = CTkFrame(delete_category_frame, height=50,width=60, fg_color="white")
+        category_frame.pack(anchor = "center", fill="x", pady=(30,0))
+        category_name = CTkLabel(category_frame, text="Category", font=("Verdana", 16, "bold"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
+        category_name.pack(padx=(15,0), pady=(0,3), fill="x", anchor="nw")
+        category_input = CTkEntry(category_frame, placeholder_text="Enter category name to delete", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
+        category_input.pack(pady=(1,10), padx=(15,0), anchor="w", side="bottom")
+
+        def get_category_to_delete():
+            delete_input = category_input.get()
+            products_management.delete_category(delete_input)
+            delete_app.after(100, delete_app.destroy())
+            return delete_input
+
+        delete_category = CTkFrame(delete_category_frame, height=45, width=190, fg_color="white", corner_radius=15)
+        delete_category.pack(side="bottom", pady=(0,45))
+        delete_category.pack_propagate(0)
+        category_button = CTkButton(delete_category, text="Delete", text_color="white", font=("Verdana", 15, "bold"), anchor="center", corner_radius=15, fg_color="#AA3939", hover_color="#8B2F2F", command=lambda: get_category_to_delete())
+        category_button.pack(expand=True, fill="both")
+                
+        delete_tab._segmented_button.configure(height = 30, font =("Verdana", 12, "bold"))  
+        
+    def autoadd_product():
+        products_management = InventoryManagement(engine)
+        autoadd_app = CTkToplevel()
+        autoadd_app.title("Add products automatic")
+        autoadd_app.geometry("500x300+750+350")
+        autoadd_app.after(100, lambda: autoadd_app.focus())
+        autoadd_app.pack_propagate(0)
+
+        autoadd_frame = CTkFrame(autoadd_app, fg_color = "white")
+        autoadd_frame.pack(fill="both", expand= True)
+        
+        autoadd_label = CTkLabel(autoadd_frame, text="Upload an Excel file to register products...", text_color="#5E5E5E", font=("Arial", 20, "bold"), anchor="center")
+        autoadd_label.pack(pady=(100,0))
+        autoadd_button = CTkButton(autoadd_frame, text="Submit", fg_color="#57C590", hover_color="#49A578", font=("Verdana", 15, "bold"), text_color="white",height=35, width=150, command=lambda:products_management.choose_file())
+        autoadd_button.pack(anchor="center", pady= (20,0))
+        
+        created_label = CTkLabel(autoadd_frame, height=30,width=250, font=("Verdana", 12, "bold"), text_color="green", text="Products Created")
+        created_label.pack_forget()
+
+        question_data = Image.open(r"images\question.png")
+        question_image = CTkImage(light_image=question_data, dark_image=question_data, size=(18,18))    
+        question_button = CTkButton(autoadd_frame, width = 18, height=18, corner_radius=4, anchor="w", text="", fg_color="#57C590", hover_color="#49A578", image=question_image)
+        question_button.pack_propagate(0)
+        question_button.pack(pady=10, padx=10, side="bottom", anchor="se")
 
     
 

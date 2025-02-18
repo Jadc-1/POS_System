@@ -35,7 +35,7 @@ class InventoryManagement():
 
     def list_query_products(self, query):
         with Session(engine) as session:
-            statement = select(Products, Categorys.name).join(Categorys).where(Products.name.like(f"%{query}%")) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
+            statement = select(Products, Categorys.name).outerjoin(Categorys).where(Products.name.like(f"%{query}%")) ##To fazendo mais de uma verificação no where, para o usuario poder pesquisar não so apenas pelo nome, porém categoria,etc
             results = session.exec(statement).all() ## Depois de selecionar, o result vai retornar para a gente a tabela, agora precisamos dizer que queremos todos os valores da tabela, com o all
 
             self.table = self._list_products(results)
@@ -44,7 +44,7 @@ class InventoryManagement():
         
     def list_query_categories(self, query):
         with Session(engine) as session:
-            statement = select(Products,Categorys.name).join(Categorys).where(Categorys.name == query)
+            statement = select(Products,Categorys.name).outerjoin(Categorys).where(Categorys.name == query)
             results = session.exec(statement).all()
 
             self.table = self._list_products(results)
@@ -67,7 +67,7 @@ class InventoryManagement():
     
     def create_table_view(self):
         with Session(engine) as session:
-            statement = select(Products, Categorys.name).join(Categorys)
+            statement = select(Products, Categorys.name).outerjoin(Categorys)
             results = session.exec(statement).all()
             
             self.table = self._list_products(results)
@@ -81,7 +81,7 @@ class InventoryManagement():
             if result:
                 return result.id
             else:
-                new_category = Categorys(name = name)
+                new_category = Categorys(name = name.strip())
                 session.add(new_category)
                 session.commit()
                 return new_category.id
