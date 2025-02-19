@@ -50,20 +50,44 @@ class InventoryManagement():
             self.table = self._list_products(results)
 
             return self.table
-        
+
+    def search_delete_product(self, name):
+        with Session(engine) as session:
+            statement = select(Products.name).where(Products.name == name)
+            result = session.exec(statement).first()
+            if result:
+                return True
+            else:
+                return None
+                
+    def search_delete_category(self,name):
+        with Session(engine) as session:
+            statement = select(Categorys.name).where(Categorys.name == name)
+            result = session.exec(statement).first()
+            if result:
+                return True
+            else:
+                return None
+
     def delete_product(self, name):
         with Session(engine) as session:
             statement = select(Products).where(Products.name == name)
             result = session.exec(statement).first()
-            session.delete(result)
-            session.commit()
+            if result:
+                session.delete(result)
+                session.commit()
+            else:
+                return
 
     def delete_category(self,name):
         with Session(engine) as session:
             statement = select(Categorys).where(Categorys.name == name)
-            results = session.exec(statement).first()
-            session.delete(results)
-            session.commit()
+            result = session.exec(statement).first()
+            if result:
+                session.delete(result)
+                session.commit()
+            else:
+                return
     
     def create_table_view(self):
         with Session(engine) as session:
@@ -185,7 +209,6 @@ class InventoryManagement():
                   
 
 im = InventoryManagement(engine)  
-
 
 # coxinha = Products(name = 'Coxinha', kg_price = '27.50', quantity = 15, enter_date = date.today(), expiration_date=date(2025, 10, 21) , category_id= 3)
 

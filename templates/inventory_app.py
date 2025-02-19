@@ -154,7 +154,7 @@ def inventory_app(parent):
         product_app = CTkToplevel()
         name_font = CTkFont("Verdana", 13, "normal")
         product_app.title("Add Product")
-        product_app.geometry("500x600+750+150")
+        product_app.geometry("500x600+750+200")
         product_app.resizable(0,0)
         product_app.config(background="#F6F6F6")
         #Depois de abrir totalmente a janela, ela será o foco, ou seja, vai sobrepor a janela
@@ -267,7 +267,6 @@ def inventory_app(parent):
                 name_error.configure(text="Name entry can not be empty!")
                 name_error.pack(side="bottom", anchor="w", padx=(30,0))
                 name_error.pack_propagate(0)
-                name_error.after(4000, lambda: name_error.pack_forget())
                 return
             else:
                 name_error.pack_forget()
@@ -278,7 +277,8 @@ def inventory_app(parent):
                 unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
                 unit_price_error.pack(side="bottom", anchor="w", padx=(30,0))
                 unit_price_error.pack_propagate(0)
-                unit_price_error.after(4000, lambda: unit_price_error.pack_forget())
+            else:
+                unit_price_error.pack_forget()
 
             try:
                 quantity_value = int(quantity_input.get().strip())
@@ -286,7 +286,9 @@ def inventory_app(parent):
                 quantity_error.configure(text="Invalid input: The quantity must be a numeric value.")
                 quantity_error.pack(side="bottom", anchor="w", padx=(30,0))
                 quantity_error.pack_propagate(0)
-                quantity_error.after(4000, lambda: quantity_error.pack_forget())
+
+            else:
+                quantity_error.pack_forget()
             
             category_value = category_option.get().strip()
             if date_choosed:
@@ -298,20 +300,13 @@ def inventory_app(parent):
             try:
                 product = Products(name=name_value, kg_price=unit_price_value, quantity=quantity_value, enter_date= date.today() ,expiration_date = expiration_date, category_id= category_id)
                 products_management.create_product(product)
-                confirm_message = CTkMessagebox(master = product_app, message=f"{name_value} created!", icon="check", bg_color="#4FB483", fg_color="white", button_color= "#57C590",option_1="Close", title = "", button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                confirm_message = CTkMessagebox(master = product_app, message=f"{name_value} created!", icon="check", button_color= "#57C590",option_1="Close", title = "", button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                confirm_message.after(100, lambda: confirm_message.focus())
                 if confirm_message.get() =="Close":
                     product_app_frame.after(300,product_app.destroy())
             except UnboundLocalError:
                 unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
 
-
-
-                #confirm_frame = CTkFrame(product_app, fg_color="#57C590")
-                # confirm_frame.pack(anchor="center", fill="both", expand=True)
-                # confirm_frame.pack_propagate(0)
-                # confirm = CTkLabel(confirm_frame, text="Product Created!", fg_color="#57C590", font=("Verdana", 25, "bold"), text_color="white", anchor="center")
-                # confirm.pack()
-                # confirm.place(rely=0.45, relx=0.25)
 
     def delete_product_app(): 
         products_management = InventoryManagement(engine)
@@ -342,12 +337,22 @@ def inventory_app(parent):
         name_frame.pack(anchor = "center", fill="x", pady=(30,0))
         product_name = CTkLabel(name_frame, text="Name", font=("Verdana", 16, "bold"), text_color= "#5E5E5E",anchor="nw", fg_color="white", width= 70, height= 20)
         product_name.pack(padx=(15,0), pady=(0,3), fill="x", anchor="nw")
-        name_input = CTkEntry(name_frame, placeholder_text="Enter product name to delete", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
-        name_input.pack(pady=(1,10), padx=(15,0), anchor="w", side="bottom")
+        name_intern_frame = CTkFrame(delete_product_frame, fg_color="white")
+        name_intern_frame.pack(fill="x")
+        name_input = CTkEntry(name_intern_frame, placeholder_text="Enter product name to delete", height=40, width= 435, corner_radius=0, border_color= "#AA3939", border_width=1)
+        name_input.pack(pady=(1,10), padx=(15,0), anchor="w", side="top")
 
         def get_product_to_delete():
             delete_input = name_input.get()
-            products_management.delete_product(delete_input)
+            if products_management.search_delete_product(delete_input):
+                products_management.delete_product(delete_input)
+                name_confirm = CTkMessagebox(master=delete_app, message=f"Product {delete_input} deleted!", icon="check", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+            else:
+                name_error = CTkMessagebox(master=delete_app, message=f"Product {delete_input} not found!", icon="cancel", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                name_error.after(100, lambda: name_error.focus())
+                if name_error.get() == "Ok":
+                    name_error.destroy()
+                return
             delete_app.after(100, delete_app.destroy())
             return delete_input
 
@@ -375,7 +380,15 @@ def inventory_app(parent):
 
         def get_category_to_delete():
             delete_input = category_input.get()
-            products_management.delete_category(delete_input)
+            if products_management.search_delete_category(delete_input):
+                category_confirm = CTkMessagebox(master=delete_app, message=f"Category {delete_input} deleted!", icon="check", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                products_management.delete_category(delete_input)
+            else:
+                category_error = CTkMessagebox(master=delete_app, message=f"Category {delete_input} not found!", icon="cancel", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                category_error.after(100, lambda: category_error.focus())
+                if category_error.get() == "Ok":
+                    category_error.destroy()
+                return
             delete_app.after(100, delete_app.destroy())
             return delete_input
 
