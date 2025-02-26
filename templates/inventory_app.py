@@ -347,6 +347,8 @@ def inventory_app(parent):
             if products_management.search_delete_product(delete_input):
                 products_management.delete_product(delete_input)
                 name_confirm = CTkMessagebox(master=delete_app, message=f"Product {delete_input} deleted!", icon="check", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                if name_confirm.get() == "Ok":
+                    name_confirm.destroy()
             else:
                 name_error = CTkMessagebox(master=delete_app, message=f"Product {delete_input} not found!", icon="cancel", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
                 name_error.after(100, lambda: name_error.focus())
@@ -382,6 +384,8 @@ def inventory_app(parent):
             delete_input = category_input.get()
             if products_management.search_delete_category(delete_input):
                 category_confirm = CTkMessagebox(master=delete_app, message=f"Category {delete_input} deleted!", icon="check", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                if category_confirm.get() == "Ok":
+                    category_confirm.destroy()
                 products_management.delete_category(delete_input)
             else:
                 category_error = CTkMessagebox(master=delete_app, message=f"Category {delete_input} not found!", icon="cancel", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
@@ -424,11 +428,7 @@ def inventory_app(parent):
         question_button = CTkButton(autoadd_frame, width = 18, height=18, corner_radius=4, anchor="w", text="", fg_color="#57C590", hover_color="#49A578", image=question_image)
         question_button.pack_propagate(0)
         question_button.pack(pady=10, padx=10, side="bottom", anchor="se")
-
-    
-
-
-
+   
 
 
 # def close_app():
