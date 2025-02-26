@@ -7,7 +7,7 @@ os.environ['TK_LIBRARY'] = r"C:\Users\Família\AppData\Local\Programs\Python\Pyt
 
 import customtkinter as ctk
 from PIL import Image
-from templates.inventory_app import inventory_app
+from templates.inventory_app import InventoryApp
 from templates.sales_report import sales_report_app
 from templates.pos_system import pos_system
 from views.inventory_view import InventoryManagement
@@ -50,7 +50,7 @@ class mainApp(ctk.CTk):
             for item in self.content.winfo_children():
                 item.destroy() #Esse laço vai pegar a informação do
             if button == self.sidebar_inventory:
-                inventory_app(parent) ## O parente se refere ao app, ou seja, vai criar a tela dentro do parent, que estamos passando no botão
+                InventoryApp(parent) ## O parente se refere ao app, ou seja, vai criar a tela dentro do parent, que estamos passando no botão
             elif button == self.sidebar_sales_report:
                 sales_report_app(parent)
             elif button == self.sidebar_pos:
