@@ -46,9 +46,9 @@ class mainApp(ctk.CTk):
                 i.configure(fg_color="#4CAF50")
                 
             button.configure(fg_color="#007900")
-
+            
             for item in self.content.winfo_children():
-                item.destroy() #Esse laço vai pegar a informação do
+                item.pack_forget() #Esse laço vai pegar a informação do
             if button == self.sidebar_inventory:
                 InventoryApp(parent) ## O parente se refere ao app, ou seja, vai criar a tela dentro do parent, que estamos passando no botão
             elif button == self.sidebar_sales_report:

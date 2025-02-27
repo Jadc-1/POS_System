@@ -1,2 +1,1 @@
 1 - Desenvolver o html de como utilizar o arquivo excel para adicionar produtos
-2 - Refatorar o codigo do inventory_app modularizando ele em classes

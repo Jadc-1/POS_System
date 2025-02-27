@@ -217,6 +217,7 @@ class InventoryApp():
         self.category.pack(anchor="nw")
         self.category_option = ctk.CTkComboBox(self.category_frame, values = self.products_management.list_categories_name(), text_color="#5E5E5E", font = ("Verdana", 13, "bold"), height=34, width= 200, fg_color="#DEDEDE", button_color="#DEDEDE", button_hover_color="#BCBCBC", corner_radius= 10, dropdown_fg_color="#DEDEDE", dropdown_text_color="#5E5E5E", dropdown_font=("Verdana", 13, "bold"), border_width=0)
         self.category_option.pack(pady=(1,10))
+        self.category_option.set("Outros")
 
         self.calendar_image_data = Image.open(r"images\calendar_1.png")
         self.calendar_image = ctk.CTkImage(light_image=self.calendar_image_data, dark_image=self.calendar_image_data)
@@ -275,7 +276,7 @@ class InventoryApp():
             else:
                 self.name_error.pack_forget()
             #Tratando o que o usuario digitar em Unit Price e Quantity, para só aceitar números e evitar campos vazios
-            try:
+            try:  
                 self.unit_price_value = float(self.unit_price_input.get().strip())
             except ValueError:
                 self.unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
@@ -290,7 +291,7 @@ class InventoryApp():
                 self.quantity_error.configure(text="Invalid input: The quantity must be a numeric value.")
                 self.quantity_error.pack(side="bottom", anchor="w", padx=(30,0))
                 self.quantity_error.pack_propagate(0)
-
+                return
             else:
                 self.quantity_error.pack_forget()
             
@@ -310,7 +311,8 @@ class InventoryApp():
                     self.product_app_frame.after(300,self.product_app.destroy())
             except UnboundLocalError:
                 self.unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
-
+            except AttributeError:
+                self.unit_price_error.configure(text="Invalid input: The unit price must be a numeric value.")
 
     def delete_product_app(self): 
         self.delete_app = ctk.CTkToplevel()
@@ -411,7 +413,7 @@ class InventoryApp():
         self.autoadd_app = ctk.CTkToplevel()
         self.autoadd_app.title("Add products automatic")
         self.autoadd_app.geometry("500x300+750+350")
-        self.autoadd_app.after(100, lambda: self.autoadd_app.focus())
+        self.autoadd_app.after(100, lambda: self.autoadd_app.focus_force())
         self.autoadd_app.pack_propagate(0)
 
         self.autoadd_frame = ctk.CTkFrame(self.autoadd_app, fg_color = "white")
@@ -419,11 +421,20 @@ class InventoryApp():
         
         self.autoadd_label = ctk.CTkLabel(self.autoadd_frame, text="Upload an Excel file to register products...", text_color="#5E5E5E", font=("Arial", 20, "bold"), anchor="center")
         self.autoadd_label.pack(pady=(100,0))
-        self.autoadd_button = ctk.CTkButton(self.autoadd_frame, text="Submit", fg_color="#57C590", hover_color="#49A578", font=("Verdana", 15, "bold"), text_color="white",height=35, width=150, command=lambda:self.products_management.choose_file())
+        self.autoadd_button = ctk.CTkButton(self.autoadd_frame, text="Submit", fg_color="#57C590", hover_color="#49A578", font=("Verdana", 15, "bold"), text_color="white",height=35, width=150, command=lambda: on_choose_file())
         self.autoadd_button.pack(anchor="center", pady= (20,0))
         
-        self.created_label = ctk.CTkLabel(self.autoadd_frame, height=30,width=250, font=("Verdana", 12, "bold"), text_color="green", text="Products Created")
-        self.created_label.pack_forget()
+        def on_choose_file():
+            if self.products_management.choose_file():
+                self.autoadd_confirm = CTkMessagebox(master=self.autoadd_app, message=f"Products from excel created!", icon="check", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                if self.autoadd_confirm.get() == "Ok":
+                    self.autoadd_app.destroy()
+                    return
+            else:
+                self.autoadd_error = CTkMessagebox(master=self.autoadd_app, message=f"Please Upload a Valid File", icon="warning", option_1="Ok", title="", button_color= "#57C590",button_text_color="white", button_hover_color="#76C793", font=("Verdana", 12, "bold"))
+                if self.autoadd_error.get() == "Ok":
+                    self.autoadd_app.after(400, lambda: self.autoadd_app.deiconify())
+                    self.autoadd_app.after(500, lambda: self.autoadd_app.focus_force())
 
         self.question_data = Image.open(r"images\question.png")
         self.question_image = ctk.CTkImage(light_image=self.question_data, dark_image=self.question_data, size=(18,18))    

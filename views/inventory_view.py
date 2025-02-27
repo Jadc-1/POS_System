@@ -152,9 +152,12 @@ class InventoryManagement():
             title="Choose a file",
             filetypes=[("Excel file", '.xlsx', '.xls'),("Txt file", '.txt')]
         ))
-
-        if self.file:
-            self.convert_file(self.file)
+        try:
+            if self.file:
+                self.convert_file(self.file)
+                return True
+        except IndexError:
+            return None
 
     def convert_file(self, file):
         #Verifica a extensão do arquivo
