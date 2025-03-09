@@ -1,5 +1,4 @@
 import __init__
-
 import customtkinter as ctk
 from models.model import Products,Categorys
 from PIL import Image, ImageTk
@@ -162,7 +161,8 @@ class InventoryApp():
         self.product_app.resizable(0,0)
         self.product_app.config(background="#F6F6F6")
         #Depois de abrir totalmente a janela, ela será o foco, ou seja, vai sobrepor a janela
-        self.product_app.after(100, lambda: self.product_app.focus())
+        self.product_app.after(100, lambda: self.product_app.deiconify)
+        self.product_app.after(150, lambda: self.product_app.focus())
         
         
         self.product_app_frame = ctk.CTkFrame(self.product_app, fg_color="white")
@@ -318,7 +318,8 @@ class InventoryApp():
         self.delete_app = ctk.CTkToplevel()
         self.delete_app.title("Delete products")
         self.delete_app.geometry("500x300+750+350")
-        self.delete_app.after(100, lambda: self.delete_app.focus())
+        self.delete_app.after(100, lambda: self.delete_app.deiconify)
+        self.delete_app.after(150, lambda: self.delete_app.focus())
     
 
         self.delete_app_mainframe = ctk.CTkFrame(self.delete_app, fg_color="white")

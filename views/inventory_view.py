@@ -8,6 +8,7 @@ import pandas as pd
 from tkinter import filedialog
 from customtkinter import CTkLabel
 
+
 class InventoryManagement():
     def __init__(self, engine):
         self.engine = engine
